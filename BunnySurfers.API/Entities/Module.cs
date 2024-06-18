@@ -13,5 +13,7 @@
 
         // A module is composed of many activities
         public List<Activity> Acitivities { get; set; } = [];
+
+        public List<Document> Documents { get; set; } = [];
     }
 }

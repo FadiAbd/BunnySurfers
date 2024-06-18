@@ -16,5 +16,7 @@
 
         // Courses are composed of many modules
         public List<Module> Modules { get; set; } = [];
+
+        public List<Document> Documents { get; set; } = [];
     }
 }

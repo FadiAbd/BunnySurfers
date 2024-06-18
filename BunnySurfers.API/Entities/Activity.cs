@@ -14,5 +14,7 @@
 
         // An activity belongs to one module
         public Module Module { get; set; } = null!;
+
+        public List<Document> Documents { get; set; } = [];
     }
 }
