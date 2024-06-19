@@ -202,7 +202,7 @@ namespace BunnySurfers.API.Migrations
             modelBuilder.Entity("BunnySurfers.API.Entities.Activity", b =>
                 {
                     b.HasOne("BunnySurfers.API.Entities.Module", "Module")
-                        .WithMany("Acitivities")
+                        .WithMany("Activities")
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -273,7 +273,7 @@ namespace BunnySurfers.API.Migrations
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Module", b =>
                 {
-                    b.Navigation("Acitivities");
+                    b.Navigation("Activities");
 
                     b.Navigation("Documents");
                 });

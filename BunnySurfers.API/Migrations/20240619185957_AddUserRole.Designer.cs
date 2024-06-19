@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BunnySurfers.API.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
-    [Migration("20240619183926_AddUserRole")]
+    [Migration("20240619185957_AddUserRole")]
     partial class AddUserRole
     {
         /// <inheritdoc />
@@ -205,7 +205,7 @@ namespace BunnySurfers.API.Migrations
             modelBuilder.Entity("BunnySurfers.API.Entities.Activity", b =>
                 {
                     b.HasOne("BunnySurfers.API.Entities.Module", "Module")
-                        .WithMany("Acitivities")
+                        .WithMany("Activities")
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -276,7 +276,7 @@ namespace BunnySurfers.API.Migrations
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Module", b =>
                 {
-                    b.Navigation("Acitivities");
+                    b.Navigation("Activities");
 
                     b.Navigation("Documents");
                 });
