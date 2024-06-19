@@ -6,7 +6,11 @@
         public required string Name { get; set; }
         public required string Email { get; set; }
 
-        // All users can upload documents
+        // To accomodate Teachers, a User may have many courses
+        // Students belonging to only one course must be handled elsewhere
+        public List<Course> Courses { get; set; } = [];
+
+        // Users can upload documents
         public List<Document> Documents { get; set; } = [];
     }
 }

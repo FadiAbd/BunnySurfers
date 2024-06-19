@@ -65,40 +65,24 @@ namespace BunnySurfers.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "CourseUser",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: true)
+                    CoursesCourseId = table.Column<int>(type: "int", nullable: false),
+                    UsersUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.UserId);
+                    table.PrimaryKey("PK_CourseUser", x => new { x.CoursesCourseId, x.UsersUserId });
                     table.ForeignKey(
-                        name: "FK_Students_Courses_CourseId",
-                        column: x => x.CourseId,
+                        name: "FK_CourseUser_Courses_CoursesCourseId",
+                        column: x => x.CoursesCourseId,
                         principalTable: "Courses",
-                        principalColumn: "CourseId");
-                    table.ForeignKey(
-                        name: "FK_Students_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "CourseId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Teachers",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Teachers", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_Teachers_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_CourseUser_Users_UsersUserId",
+                        column: x => x.UsersUserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -125,30 +109,6 @@ namespace BunnySurfers.API.Migrations
                         column: x => x.ModuleId,
                         principalTable: "Modules",
                         principalColumn: "ModuleId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CourseTeacher",
-                columns: table => new
-                {
-                    CoursesCourseId = table.Column<int>(type: "int", nullable: false),
-                    TeachersUserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CourseTeacher", x => new { x.CoursesCourseId, x.TeachersUserId });
-                    table.ForeignKey(
-                        name: "FK_CourseTeacher_Courses_CoursesCourseId",
-                        column: x => x.CoursesCourseId,
-                        principalTable: "Courses",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CourseTeacher_Teachers_TeachersUserId",
-                        column: x => x.TeachersUserId,
-                        principalTable: "Teachers",
-                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -198,9 +158,9 @@ namespace BunnySurfers.API.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseTeacher_TeachersUserId",
-                table: "CourseTeacher",
-                column: "TeachersUserId");
+                name: "IX_CourseUser_UsersUserId",
+                table: "CourseUser",
+                column: "UsersUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_ActivityId",
@@ -226,27 +186,16 @@ namespace BunnySurfers.API.Migrations
                 name: "IX_Modules_CourseId",
                 table: "Modules",
                 column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Students_CourseId",
-                table: "Students",
-                column: "CourseId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CourseTeacher");
+                name: "CourseUser");
 
             migrationBuilder.DropTable(
                 name: "Documents");
-
-            migrationBuilder.DropTable(
-                name: "Students");
-
-            migrationBuilder.DropTable(
-                name: "Teachers");
 
             migrationBuilder.DropTable(
                 name: "Activities");

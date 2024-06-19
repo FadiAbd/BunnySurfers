@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BunnySurfers.API.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
-    [Migration("20240618090554_Initial")]
+    [Migration("20240619105511_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -182,42 +182,21 @@ namespace BunnySurfers.API.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-
-                    b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("CourseTeacher", b =>
+            modelBuilder.Entity("CourseUser", b =>
                 {
                     b.Property<int>("CoursesCourseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeachersUserId")
+                    b.Property<int>("UsersUserId")
                         .HasColumnType("int");
 
-                    b.HasKey("CoursesCourseId", "TeachersUserId");
+                    b.HasKey("CoursesCourseId", "UsersUserId");
 
-                    b.HasIndex("TeachersUserId");
+                    b.HasIndex("UsersUserId");
 
-                    b.ToTable("CourseTeacher");
-                });
-
-            modelBuilder.Entity("BunnySurfers.API.Entities.Student", b =>
-                {
-                    b.HasBaseType("BunnySurfers.API.Entities.User");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Students", (string)null);
-                });
-
-            modelBuilder.Entity("BunnySurfers.API.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("BunnySurfers.API.Entities.User");
-
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("CourseUser");
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Activity", b =>
@@ -265,7 +244,7 @@ namespace BunnySurfers.API.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("CourseTeacher", b =>
+            modelBuilder.Entity("CourseUser", b =>
                 {
                     b.HasOne("BunnySurfers.API.Entities.Course", null)
                         .WithMany()
@@ -273,33 +252,9 @@ namespace BunnySurfers.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BunnySurfers.API.Entities.Teacher", null)
+                    b.HasOne("BunnySurfers.API.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("TeachersUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BunnySurfers.API.Entities.Student", b =>
-                {
-                    b.HasOne("BunnySurfers.API.Entities.Course", "Course")
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("BunnySurfers.API.Entities.User", null)
-                        .WithOne()
-                        .HasForeignKey("BunnySurfers.API.Entities.Student", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("BunnySurfers.API.Entities.Teacher", b =>
-                {
-                    b.HasOne("BunnySurfers.API.Entities.User", null)
-                        .WithOne()
-                        .HasForeignKey("BunnySurfers.API.Entities.Teacher", "UserId")
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -314,8 +269,6 @@ namespace BunnySurfers.API.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Modules");
-
-                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Module", b =>
