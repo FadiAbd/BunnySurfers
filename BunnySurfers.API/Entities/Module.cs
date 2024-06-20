@@ -10,7 +10,7 @@
 
         // A module belongs to a single course
         public int CourseId { get; set; }
-        public Course Course { get; set; } = null!;
+        public Course Course { get; set; } = null!;  
 
         // A module is composed of many activities
         public List<Activity> Activities { get; set; } = [];
