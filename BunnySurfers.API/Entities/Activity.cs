@@ -9,7 +9,7 @@
 
         // Activities occur at certain times, not just dates; need DateTime
         // Not all activities have an associated date
-        public DateTime? StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         // Not all activities have two times, e.g. due date of an assignment
         public DateTime? EndTime { get; set; }
 
