@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -13,6 +14,10 @@ namespace BunnySurfers.API.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Documents_Users_UploadedByUserId",
                 table: "Documents");
+
+            migrationBuilder.DropColumn(
+                name: "EndDate",
+                table: "Activities");
 
             migrationBuilder.RenameColumn(
                 name: "UploadedByUserId",
@@ -29,11 +34,6 @@ namespace BunnySurfers.API.Migrations
                 table: "Activities",
                 newName: "StartTime");
 
-            migrationBuilder.RenameColumn(
-                name: "EndDate",
-                table: "Activities",
-                newName: "EndTime");
-
             migrationBuilder.AddColumn<string>(
                 name: "LocalFilePath",
                 table: "Documents",
@@ -47,6 +47,13 @@ namespace BunnySurfers.API.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "EndTime",
+                table: "Activities",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Documents_Users_UserId",
@@ -72,6 +79,10 @@ namespace BunnySurfers.API.Migrations
                 name: "UntrustedFileName",
                 table: "Documents");
 
+            migrationBuilder.DropColumn(
+                name: "EndTime",
+                table: "Activities");
+
             migrationBuilder.RenameColumn(
                 name: "UserId",
                 table: "Documents",
@@ -87,10 +98,11 @@ namespace BunnySurfers.API.Migrations
                 table: "Activities",
                 newName: "StartDate");
 
-            migrationBuilder.RenameColumn(
-                name: "EndTime",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "EndDate",
                 table: "Activities",
-                newName: "EndDate");
+                type: "datetime2",
+                nullable: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Documents_Users_UploadedByUserId",
