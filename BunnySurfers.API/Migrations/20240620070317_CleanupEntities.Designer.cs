@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BunnySurfers.API.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
-    [Migration("20240620065505_CleanupEntities")]
+    [Migration("20240620070317_CleanupEntities")]
     partial class CleanupEntities
     {
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace BunnySurfers.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ModuleId")
