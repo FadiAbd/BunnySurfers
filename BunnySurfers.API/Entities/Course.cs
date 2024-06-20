@@ -1,11 +1,15 @@
-﻿namespace BunnySurfers.API.Entities
+﻿using System.ComponentModel;
+
+namespace BunnySurfers.API.Entities
 {
     public class Course
     {
         public int CourseId { get; set; }
         public required string Name { get; set; }
         public string Description { get; set; } = string.Empty;
+      
         public DateOnly StartDate { get; set; }
+     
         public DateOnly EndDate { get; set; }
 
         // Courses have many students
