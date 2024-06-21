@@ -1,3 +1,7 @@
+using BunnySurfers.API.Data;
+using BunnySurfers.API.Utilities;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 

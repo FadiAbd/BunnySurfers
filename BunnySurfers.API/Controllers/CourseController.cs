@@ -2,6 +2,7 @@
 using BunnySurfers.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BunnySurfers.API.Controllers
