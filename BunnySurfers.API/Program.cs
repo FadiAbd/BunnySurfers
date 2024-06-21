@@ -1,7 +1,3 @@
-using BunnySurfers.API.Data;
-using BunnySurfers.API.Utilities;
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -19,6 +15,10 @@ builder.Services.AddSwaggerGen(options =>
         Format = "date",
         Example = new Microsoft.OpenApi.Any.OpenApiString(DateOnly.FromDateTime(DateTime.Now).ToString(DateOnlyJsonConverter.Format))
     }));
+
+// Add the database for the DbContext
+builder.Services.AddDbContext<LMSDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
 
 // Add the database for the DbContext
 builder.Services.AddDbContext<LMSDbContext>(options =>
