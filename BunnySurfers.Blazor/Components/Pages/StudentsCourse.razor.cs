@@ -31,7 +31,7 @@ namespace BunnySurfers.Blazor.Components.Pages
                 ?? throw new Exception("Need to configure 'APIRootUrl' in appsettings.json");
 
             // Set up and execute the API call
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{APIRootUrl}/api/student/{StudentId}/course");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{APIRootUrl}/api/Student/{StudentId}");
             var client = ClientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
