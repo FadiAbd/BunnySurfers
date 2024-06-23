@@ -16,7 +16,8 @@ namespace BunnySurfers.Blazor.Components.Pages
         private string APIRootUrl { get; set; } = string.Empty;
 
         public Course? Course { get; set; } = null;
-        public IEnumerable<User> Participants { get; set; } = [];
+        public User? Teacher { get; set; } = null;
+        public IEnumerable<User> Students { get; set; } = [];
 
         private bool getCourseError;
         private bool shouldRender;
@@ -35,15 +36,21 @@ namespace BunnySurfers.Blazor.Components.Pages
             var client = ClientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
-            // Parse the response from the API
-            if (response.IsSuccessStatusCode)
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-                Course = await JsonSerializer.DeserializeAsync<Course?>(responseStream);
-            }
-            else
+            // If the API call is unsuccessful, return now
+            if (!response.IsSuccessStatusCode)
             {
                 getCourseError = true;
+                shouldRender = true;
+                return;
+            }
+
+            // Parse the API response into a Course with participants
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Course = await JsonSerializer.DeserializeAsync<Course?>(responseStream);
+            if (Course is not null)
+            {
+                Teacher = Course.Users.FirstOrDefault(u => u.Role == UserRole.Teacher);
+                Students = Course.Users.Where(u => u.Role == UserRole.Student && u.UserId != StudentId).ToList();
             }
 
             shouldRender = true;

@@ -1,6 +1,6 @@
 ﻿@page "/student/{StudentId:int}"
 
-<h3>Course info</h3>
+<h3>Your Course Info</h3>
 
 @if (getCourseError)
 {
@@ -16,4 +16,14 @@ else
     <h5>@Course.StartDate.ToShortDateString() - @Course.EndDate.ToShortDateString()</h5>
 
     <p>@Course.Description</p>
+
+    <p>Teacher: @(Teacher is null ? "None" : Teacher.Name)</p>
+
+    <h5>Other students</h5>
+    <ul>
+        @foreach (var student in Students)
+        {
+            <li>@student.Name; @student.Email</li>
+        }
+    </ul>
 }
