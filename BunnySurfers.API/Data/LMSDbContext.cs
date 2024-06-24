@@ -10,10 +10,5 @@ namespace BunnySurfers.API.Data
         public DbSet<Module> Modules { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Document> Documents { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            
-        }
     }
 }

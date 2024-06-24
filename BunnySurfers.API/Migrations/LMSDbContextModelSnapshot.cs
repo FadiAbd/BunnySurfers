@@ -54,7 +54,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activities");
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Course", b =>
@@ -81,7 +81,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Document", b =>
@@ -133,7 +133,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Module", b =>
@@ -165,7 +165,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Modules");
+                    b.ToTable("Modules", (string)null);
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.User", b =>
@@ -189,7 +189,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CourseUser", b =>
@@ -204,7 +204,7 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("UsersUserId");
 
-                    b.ToTable("CourseUser");
+                    b.ToTable("CourseUser", (string)null);
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Activity", b =>
