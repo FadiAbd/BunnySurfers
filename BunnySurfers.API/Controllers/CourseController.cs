@@ -12,23 +12,26 @@ namespace BunnySurfers.API.Controllers
     public class CourseController : ControllerBase
     {
         private readonly LMSDbContext _dbContext;
+      
 
-        public CourseController(LMSDbContext dbContext)
+        public CourseController(LMSDbContext dbContext, HttpClient httpClient)
         {
             _dbContext = dbContext;
+           
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetAllCourses()
+        
+        public async Task<ActionResult<List<Course>>> GetAllCourses()
         {
             var courses = await _dbContext.Courses.ToListAsync();
             return Ok(courses);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourseById(int id)
+        public async Task<ActionResult<Course>> GetCourseById(int courseId)
         {
-            var course = await _dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
+            var course = await _dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == courseId);
             if (course == null)
                 return NotFound();
             return Ok(course);
@@ -46,10 +49,10 @@ namespace BunnySurfers.API.Controllers
             return CreatedAtAction(nameof(GetCourseById), new { id = course.CourseId }, course);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCourse(int id, [FromBody] Course updatedCourse)
+        [HttpPut("{courseId}")]
+        public async Task<IActionResult> UpdateCourse(int courseId, [FromBody] Course updatedCourse)
         {
-            var existingCourse = await _dbContext.Courses.FindAsync(id);
+            var existingCourse = await _dbContext.Courses.FindAsync(courseId);
             if (existingCourse == null)
                 return NotFound();
 
@@ -62,17 +65,17 @@ namespace BunnySurfers.API.Controllers
             return Ok(existingCourse);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCourse(int id)
+        [HttpDelete("{courseId}")]
+        public async Task<IActionResult> DeleteCourse(int courseId)
         {
-            var courseToDelete = await _dbContext.Courses.FindAsync(id);
+            var courseToDelete = await _dbContext.Courses.FindAsync(courseId);
             if (courseToDelete == null)
                 return NotFound();
 
             _dbContext.Courses.Remove(courseToDelete);
             await _dbContext.SaveChangesAsync();
             return NoContent();
-            ;
+            
         }
     }
 }

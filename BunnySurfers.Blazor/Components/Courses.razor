@@ -1,0 +1,84 @@
+﻿ @page "/courses"
+ @inject ICourseService CourseService
+ @inject NavigationManager NavigationManager
+ @inject HttpClient Http
+
+<h3>Courses</h3>
+
+@if (courses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+   
+    <div class="container mt-5">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in courses)
+                {
+                    <tr>
+                        <td>@course.Name</td>
+                        <td>@course.Description</td>
+                        <td>@course.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@course.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => EditCourse(course.CourseId)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => DeleteCourse(course.CourseId)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+  
+     <button class="btn btn-primary" @onclick="CreateCourse">Create New Course</button> 
+}
+
+@code {
+    private List<Course> courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        courses = await CourseService.GetCourses();
+
+        {
+
+            var data = await Http.GetStringAsync("/api/Course");
+            var uri = "https://localhost:7274/api/Course";
+            Console.WriteLine($"Requesting URI: {uri}"); data = await Http.GetStringAsync(uri);
+        }
+
+    }
+
+    private async Task EditCourse(int courseId)
+    {
+        NavigationManager.NavigateTo($"/courses/edit");
+    }
+
+    private async Task DeleteCourse(int courseId)
+    {
+        await CourseService.DeleteCourse(courseId);
+        courses = await CourseService.GetCourses();
+    }
+
+    
+    private async Task CreateCourse()
+    {
+        NavigationManager.NavigateTo($"/courses");
+    }
+}
+
+   
+   
+
+
