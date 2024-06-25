@@ -7,7 +7,7 @@ namespace BunnySurfers.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ModuleController(LMSDbContext context) : Controller
+    public class ModuleController(LMSDbContext context) : ControllerBase
     {
         private readonly LMSDbContext _context = context;
 
