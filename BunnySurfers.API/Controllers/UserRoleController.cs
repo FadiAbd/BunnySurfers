@@ -11,6 +11,17 @@ namespace BunnySurfers.API.Controllers
     {
         private readonly LMSDbContext _context = context;
 
+        private static string ValidRoles()
+        {
+            var roleNames = Enum.GetNames<UserRole>();
+            var roleValues = (int[])Enum.GetValuesAsUnderlyingType<UserRole>();
+            var numRoles = roleNames.Length;
+            string[] roleStrings = new string[numRoles];
+            for (int i = 0; i < numRoles; i++)
+                roleStrings[i] = $"{roleNames[i]} ({roleValues[i]})";
+            return string.Join("; ", roleStrings);
+        }
+
         // Get the role of a given user
         [HttpGet("{userId:int}")]
         public async Task<ActionResult<UserRole>> GetRole(int userId)
@@ -25,8 +36,12 @@ namespace BunnySurfers.API.Controllers
 
         // Change the role of a given user
         [HttpPut("{userId:int}")]
-        public async Task<IActionResult> PutRole(int userId, UserRole role)
+        public async Task<IActionResult> PutRole(int userId, [FromBody] UserRole role)
         {
+            if (!Enum.IsDefined<UserRole>(role))
+                return BadRequest(
+                    $"The given UserRole {role} was not valid. Valid values are: {ValidRoles()}");
+
             var user = await _context.Users
                 .SingleOrDefaultAsync(u => u.UserId == userId);
             if (user is null)
@@ -39,15 +54,12 @@ namespace BunnySurfers.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(userId))
+                if (!_context.Users.Any(u => u.UserId == userId))
                     return NotFound();
                 else
                     throw;
             }
             return NoContent();
         }
-
-        private bool UserExists(int userId) =>
-            _context.Users.Any(u => u.UserId == userId);
     }
 }
