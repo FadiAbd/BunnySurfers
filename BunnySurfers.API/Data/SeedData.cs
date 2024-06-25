@@ -50,7 +50,7 @@ namespace BunnySurfers.API.Data
                 new Course {
                     Name = "Databasteknik", StartDate = new DateOnly(2024, 09, 01), EndDate = new DateOnly(2024, 10, 15),
                     Description = "Teknik och verktyg att jobba med både relational databas (SQL) och non-relational databas (NoSQL)",
-                    Users = [.. users[..^1]], Documents = [documents[0]] },
+                    Users = [.. users[..4]], Documents = [documents[0]] },
                 new Course {
                     Name = "Entity Framework Core", StartDate = new DateOnly(2024, 11, 01), EndDate = new DateOnly(2024, 12, 15),
                     Description = "Koppla kunskap från Databasteknik till en Object-Relational Mapper med Entity Framework Core",
