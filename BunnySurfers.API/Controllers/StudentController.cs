@@ -20,7 +20,7 @@ namespace BunnySurfers.API.Controllers
                 .ThenInclude(c => c.Users)
                 .SingleOrDefaultAsync(u => u.UserId == userId);
             if (student is null)
-                return NotFound();
+                return NotFound($"No user with ID {userId} was found");
             if (student.Role != UserRole.Student)
                 return BadRequest($"The user with ID {userId} is not a student");
 
