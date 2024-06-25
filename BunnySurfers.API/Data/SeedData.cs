@@ -26,7 +26,8 @@ namespace BunnySurfers.API.Data
                 new User { Role = UserRole.Student, Name = "Elle Eve"     , Email = "elle.eve@hotmail.com"    },
                 new User { Role = UserRole.Student, Name = "Stuart Dent"  , Email = "stuart.dent@hotmail.com" },
                 new User { Role = UserRole.Student, Name = "Karl Karlsson", Email = "karlkarl@gmail.com"      },
-                new User { Role = UserRole.None   , Name = "Uno Thorized" , Email = "hackerman@tpu.org"       }
+                new User { Role = UserRole.None   , Name = "Uno Thorized" , Email = "hackerman@tpu.org"       },
+                new User { Role = UserRole.Admin  , Name = "Admin McAdmin", Email = "admin@admin.com"         }
             ];
             await context.AddRangeAsync(users);
 

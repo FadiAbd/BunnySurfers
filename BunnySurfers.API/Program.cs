@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using BunnySurfers.API.Data;
+using BunnySurfers.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options => {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
     });
 // The above ignores possible cyclical references in JSON serialization coming from database table relations
 
