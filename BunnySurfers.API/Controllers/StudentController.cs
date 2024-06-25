@@ -47,5 +47,32 @@ namespace BunnySurfers.API.Controllers
 
             return Ok(course.Modules);
         }
+
+        // Get the activities for a given module
+        [HttpGet("modules/{moduleId:int}")]
+        public async Task<ActionResult<IEnumerable<Activity>>> GetActivities(int userId, int moduleId)
+        {
+            var student = await _context.Users
+                .Include(u => u.Courses)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(m => m.Activities)
+                .SingleOrDefaultAsync(u => u.UserId == userId);
+            if (student is null)
+                return NotFound($"A user with ID {userId} could not be found");
+            if (student.Role != UserRole.Student)
+                return BadRequest($"The user with ID {userId} is not a student");
+
+            var course = student.Courses.SingleOrDefault();
+            if (course is null)
+                return BadRequest($"The student with ID {userId} is not currently enrolled in a course");
+
+            var module = course.Modules.SingleOrDefault(m => m.ModuleId == moduleId);
+            if (module is null)
+                return NotFound(
+                    $"A module with ID {moduleId} could not be found "
+                    + $"as part of the course with ID {course.CourseId}");
+
+            return Ok(module.Activities);
+        }
     }
 }
