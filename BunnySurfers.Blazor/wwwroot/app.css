@@ -27,3 +27,26 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+.table thead th {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table tbody td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn-primary, .btn-danger {
+    margin: 0 5px;
+}
+
+
+

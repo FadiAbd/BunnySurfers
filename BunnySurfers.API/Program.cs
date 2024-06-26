@@ -1,6 +1,28 @@
+
+using BunnySurfers.API.Data;
+using BunnySurfers.API.Utilities;
+using Microsoft.EntityFrameworkCore;
+using System;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
 
 // Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter()));
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorApp",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:7284") // L�gg till ursprunget till din Blazor-app
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => {
@@ -9,10 +31,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
     });
 // The above ignores possible cyclical references in JSON serialization coming from database table relations
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+    options.MapType<DateOnly>(() => new Microsoft.OpenApi.Models.OpenApiSchema
+    {
+        Type = "string",
+        Format = "date",
+        Example = new Microsoft.OpenApi.Any.OpenApiString(DateOnly.FromDateTime(DateTime.Now).ToString(DateOnlyJsonConverter.Format))
+    }
+));
 
 var app = builder.Build();
 
@@ -25,8 +53,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Use the CORS policy
+app.UseCors("AllowBlazorApp");
+
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
+
