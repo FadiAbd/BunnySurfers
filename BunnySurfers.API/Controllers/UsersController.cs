@@ -49,6 +49,25 @@ namespace BunnySurfers.API.Controllers
             return CreatedAtAction(nameof(PostUser), _mapper.Map<UserForGetDTO>(user));
         }
 
+        // Modify a user
+        [HttpPut("{userId:int}")]
+        public async Task<IActionResult> PutUser(int userId, UserForPostDTO userDTO)
+        {
+            // Check that the UserRole is valid
+            if (!UserRoleIsValid(userDTO.Role))
+                return BadRequest(UserRoleInvalidErrorMessage(userDTO.Role));
+
+            // Find the original user
+            var user = await _context.Users.FindAsync(userId);
+            if (user is null)
+                return NotFound($"Could not find user with ID {userId}");
+
+            // Update the user values
+            _mapper.Map(userDTO, user);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         // Check that the given UserRole is valid
         private static bool UserRoleIsValid(UserRole role) =>
             Enum.IsDefined(role);
