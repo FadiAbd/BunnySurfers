@@ -19,23 +19,12 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
 builder.Services.AddScoped<ICourseService, CourseService>();
 
 
 
-//builder.Services.AddScoped(sp => new HttpClient
-//{
-//    BaseAddress =
-//    new Uri(builder.Configuration["https://localhosts:7284"] ?? "https://localhosts:7274")
-//});
 
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:7274") });
-
-//builder.Services.AddScoped(sp => new HttpClient
-//{
-//    BaseAddress = new Uri("http://localhost:7274"),
-//    Timeout = TimeSpan.FromMinutes(2) 
-//});
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7274"), Timeout = TimeSpan.FromMinutes(4) });
 
 

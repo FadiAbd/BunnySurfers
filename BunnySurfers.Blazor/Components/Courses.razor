@@ -3,7 +3,7 @@
  @inject NavigationManager NavigationManager
  @inject HttpClient Http
 
-<h3>Courses</h3>
+<h2 style="text-align: center;">Courses</h2>
 
 @if (courses == null)
 {
@@ -11,37 +11,43 @@
 }
 else
 {
-   
-    <div class="container mt-5">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var course in courses)
-                {
+
+    <div class="container mt-5" style="margin: 0 auto; text-align: center;">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <td>@course.Name</td>
-                        <td>@course.Description</td>
-                        <td>@course.StartDate.ToString("yyyy-MM-dd")</td>
-                        <td>@course.EndDate.ToString("yyyy-MM-dd")</td>
-                        <td>
-                            <button class="btn btn-primary" @onclick="() => EditCourse(course.CourseId)">Edit</button>
-                            <button class="btn btn-danger" @onclick="() => DeleteCourse(course.CourseId)">Delete</button>
-                        </td>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var course in courses)
+                    {
+                        <tr>
+                            <td>@course.Name</td>
+                            <td>@course.Description</td>
+                            <td class="text-nowrap">@course.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td class="text-nowrap">@course.EndDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                
+                                <button class="btn btn-primary" @onclick="(() => EditCourse(course.CourseId))">Edit</button>
+                                <button class="btn btn-danger" @onclick="() => DeleteCourse(course.CourseId)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @* <button class="btn btn-primary" @onclick="(() => ShowCourse(courseId))">Create new course</button> *@
+        </div>
     </div>
+
   
-     <button class="btn btn-primary" @onclick="CreateCourse">Create New Course</button> 
+     <button class="btn btn-primary" @onclick="CreateNewCourse">Create New Course</button> 
 }
 
 @code {
@@ -62,7 +68,7 @@ else
 
     private async Task EditCourse(int courseId)
     {
-        NavigationManager.NavigateTo($"/courses/edit");
+        NavigationManager.NavigateTo($"/courseedit");
     }
 
     private async Task DeleteCourse(int courseId)
@@ -71,10 +77,15 @@ else
         courses = await CourseService.GetCourses();
     }
 
-    
-    private async Task CreateCourse()
+   void ShowCourse(int courseId)
     {
-        NavigationManager.NavigateTo($"/courses");
+         NavigationManager.NavigateTo($"courseedit/{courseId}");
+        
+    }
+
+    void CreateNewCourse()
+    {
+        NavigationManager.NavigateTo($"/courseedit");
     }
 }
 

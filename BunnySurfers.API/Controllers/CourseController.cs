@@ -28,7 +28,7 @@ namespace BunnySurfers.API.Controllers
             return Ok(courses);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{courseId}")]
         public async Task<ActionResult<Course>> GetCourseById(int courseId)
         {
             var course = await _dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == courseId);
