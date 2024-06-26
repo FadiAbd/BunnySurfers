@@ -4,6 +4,5 @@
     {
         None = 0,  // Default; unauthenticated/unauthorized
         Student,
-        Teacher
     }
 }

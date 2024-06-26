@@ -16,5 +16,11 @@
         // Which user uploaded the document?
         public int UserId { get; set; }
         public User UploadedBy { get; set; } = null!;
+
+        // Navigation properties
+        // These are nullable, but exactly *one* of them should be non-null
+        public int? CourseId { get; set; } = null;
+        public int? ModuleId { get; set; } = null;
+        public int? ActivityId { get; set; } = null;
     }
 }

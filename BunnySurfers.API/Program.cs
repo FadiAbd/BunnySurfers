@@ -1,18 +1,18 @@
-using BunnySurfers.API.Data;
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
+    });
+// The above ignores possible cyclical references in JSON serialization coming from database table relations
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Add the database for the DbContext
-builder.Services.AddDbContext<LMSDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
 
 var app = builder.Build();
 
