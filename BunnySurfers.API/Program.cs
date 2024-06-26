@@ -23,6 +23,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<LMSDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
 
+// Add automapper for DTO conversions
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
