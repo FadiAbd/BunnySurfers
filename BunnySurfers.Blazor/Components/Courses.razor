@@ -2,12 +2,15 @@
  @inject ICourseService CourseService
  @inject NavigationManager NavigationManager
  @inject HttpClient Http
+ @rendermode @(new InteractiveServerRenderMode(prerender:false))
+@*  @rendermode InteractiveServer *@
 
 <h2 style="text-align: center;">Courses</h2>
 
-@if (courses == null)
+@* @if (courses == null) *@
+@if (courses.Count == 0)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading courses...</em></p>
 }
 else
 {
@@ -36,7 +39,7 @@ else
                             <td>
                                 
                                 <button class="btn btn-primary" @onclick="(() => EditCourse(course.CourseId))">Edit</button>
-                                <button class="btn btn-danger" @onclick="() => DeleteCourse(course.CourseId)">Delete</button>
+                                <button class="btn btn-danger" @onclick="(() => DeleteCourse(course.CourseId))">Delete</button>
                             </td>
                         </tr>
                     }
@@ -51,24 +54,23 @@ else
 }
 
 @code {
-    private List<Course> courses;
+    // private List<Course> courses;
+        private List<Course> courses = new List<Course>();
 
     protected override async Task OnInitializedAsync()
     {
         courses = await CourseService.GetCourses();
-
         {
 
             var data = await Http.GetStringAsync("/api/Course");
             var uri = "https://localhost:7274/api/Course";
             Console.WriteLine($"Requesting URI: {uri}"); data = await Http.GetStringAsync(uri);
         }
-
     }
 
     private async Task EditCourse(int courseId)
     {
-        NavigationManager.NavigateTo($"/courseedit");
+        NavigationManager.NavigateTo($"/coursesedit");
     }
 
     private async Task DeleteCourse(int courseId)
@@ -77,15 +79,15 @@ else
         courses = await CourseService.GetCourses();
     }
 
-   void ShowCourse(int courseId)
-    {
-         NavigationManager.NavigateTo($"courseedit/{courseId}");
+   // void ShowCourse(int courseId)
+   //  {
+   //       NavigationManager.NavigateTo($"coursesedit/{courseId}");
         
-    }
+   //  }
 
     void CreateNewCourse()
     {
-        NavigationManager.NavigateTo($"/courseedit");
+        NavigationManager.NavigateTo($"/coursesedit");
     }
 }
 
