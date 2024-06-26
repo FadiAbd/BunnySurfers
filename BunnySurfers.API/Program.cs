@@ -1,8 +1,8 @@
+
 using BunnySurfers.API.Data;
 using BunnySurfers.API.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 
@@ -17,12 +17,20 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazorApp",
         builder =>
         {
-            builder.WithOrigins("http://localhost:7284") // Lägg till ursprunget till din Blazor-app
+            builder.WithOrigins("http://localhost:7284") // Lï¿½gg till ursprunget till din Blazor-app
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
 });
 
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
+    });
+// The above ignores possible cyclical references in JSON serialization coming from database table relations
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -33,10 +41,6 @@ builder.Services.AddSwaggerGen(options =>
         Example = new Microsoft.OpenApi.Any.OpenApiString(DateOnly.FromDateTime(DateTime.Now).ToString(DateOnlyJsonConverter.Format))
     }
 ));
-
-// Add the database for the DbContext
-builder.Services.AddDbContext<LMSDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
 
 var app = builder.Build();
 

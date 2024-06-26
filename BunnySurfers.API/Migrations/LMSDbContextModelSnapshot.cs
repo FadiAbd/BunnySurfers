@@ -54,59 +54,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activities");
-
-                    b.HasData(
-                        new
-                        {
-                            ActivityId = 1,
-                            ActivityType = 1,
-                            Description = "Introduction to the course",
-                            EndTime = new DateTime(2024, 9, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            ModuleId = 1,
-                            Name = "Introduction",
-                            StartTime = new DateTime(2024, 9, 1, 10, 30, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ActivityId = 2,
-                            ActivityType = 4,
-                            Description = "Code-along demo session on creating tables in MySQL",
-                            EndTime = new DateTime(2024, 9, 4, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            ModuleId = 1,
-                            Name = "Hands-on with MySQL",
-                            StartTime = new DateTime(2024, 9, 4, 13, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ActivityId = 3,
-                            ActivityType = 2,
-                            Description = "Review exercises on SQL query syntax (select, where, join)",
-                            EndTime = new DateTime(2024, 9, 10, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            ModuleId = 1,
-                            Name = "Query syntax review",
-                            StartTime = new DateTime(2024, 9, 7, 9, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ActivityId = 4,
-                            ActivityType = 3,
-                            Description = "Basic differences between relational and non-relational databases",
-                            EndTime = new DateTime(2024, 9, 16, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            ModuleId = 2,
-                            Name = "NoSQL basics",
-                            StartTime = new DateTime(2024, 9, 16, 10, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ActivityId = 5,
-                            ActivityType = 1,
-                            Description = "Introduction to the course",
-                            EndTime = new DateTime(2024, 11, 1, 10, 30, 0, 0, DateTimeKind.Unspecified),
-                            ModuleId = 4,
-                            Name = "Introduction",
-                            StartTime = new DateTime(2024, 11, 1, 9, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Course", b =>
@@ -133,25 +80,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.ToTable("Courses");
-
-                    b.HasData(
-                        new
-                        {
-                            CourseId = 1,
-                            Description = "Teknik och verktyg att jobba med både relational databas (SQL) och non-relational databas (NoSQL)",
-                            EndDate = new DateOnly(2024, 10, 15),
-                            Name = "Databasteknik",
-                            StartDate = new DateOnly(2024, 9, 1)
-                        },
-                        new
-                        {
-                            CourseId = 2,
-                            Description = "Koppla kunskap från Databasteknik till en Object-Relational Mapper med Entity Framework Core",
-                            EndDate = new DateOnly(2024, 12, 15),
-                            Name = "Entity Framework Core",
-                            StartDate = new DateOnly(2024, 11, 1)
-                        });
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Document", b =>
@@ -203,42 +131,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Documents");
-
-                    b.HasData(
-                        new
-                        {
-                            DocumentId = 1,
-                            CourseId = 1,
-                            Description = "Schedule",
-                            LocalFilePath = "kursschema.pdf",
-                            Name = "Kursschema",
-                            TimeOfUpload = new DateTime(2024, 8, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            UntrustedFileName = "kursschema.pdf",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            DocumentId = 2,
-                            Description = "Instructions to set up MySQL",
-                            LocalFilePath = "set_up_mysql.docx",
-                            ModuleId = 1,
-                            Name = "Getting started",
-                            TimeOfUpload = new DateTime(2024, 8, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            UntrustedFileName = "set up mysql.docx",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            DocumentId = 3,
-                            ActivityId = 3,
-                            Description = "Submission of assignment 1",
-                            LocalFilePath = "hw1_elle_eve.txt",
-                            Name = "Assignment 1",
-                            TimeOfUpload = new DateTime(2024, 9, 10, 13, 0, 0, 0, DateTimeKind.Unspecified),
-                            UntrustedFileName = "hw1.sh",
-                            UserId = 2
-                        });
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Module", b =>
@@ -270,45 +162,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Modules");
-
-                    b.HasData(
-                        new
-                        {
-                            ModuleId = 1,
-                            CourseId = 1,
-                            Description = "Relational DataBase Management Systems (RDBMS) som SQL; ACID; normalized tables; queries and performance",
-                            EndDate = new DateOnly(2024, 9, 15),
-                            Name = "Relational databas",
-                            StartDate = new DateOnly(2024, 9, 1)
-                        },
-                        new
-                        {
-                            ModuleId = 2,
-                            CourseId = 1,
-                            Description = "NoSQL systems; document data stores; graph databases; design trade-offs with ACID",
-                            EndDate = new DateOnly(2024, 9, 30),
-                            Name = "Non-relational databas",
-                            StartDate = new DateOnly(2024, 9, 16)
-                        },
-                        new
-                        {
-                            ModuleId = 3,
-                            CourseId = 1,
-                            Description = "Distributed and cloud architecture; transactions and consistency",
-                            EndDate = new DateOnly(2024, 10, 15),
-                            Name = "Distributed databas",
-                            StartDate = new DateOnly(2024, 10, 1)
-                        },
-                        new
-                        {
-                            ModuleId = 4,
-                            CourseId = 2,
-                            Description = "",
-                            EndDate = new DateOnly(2024, 11, 1),
-                            Name = "Introduction",
-                            StartDate = new DateOnly(2024, 11, 1)
-                        });
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.User", b =>
@@ -332,44 +185,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Email = "lara.ren@lexicon.se",
-                            Name = "Lara Ren",
-                            Role = 2
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            Email = "elle.eve@hotmail.com",
-                            Name = "Elle Eve",
-                            Role = 1
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            Email = "stuart.dent@hotmail.com",
-                            Name = "Stuart Dent",
-                            Role = 1
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            Email = "karlkarl@gmail.com",
-                            Name = "Karl Karlsson",
-                            Role = 1
-                        },
-                        new
-                        {
-                            UserId = 5,
-                            Email = "hackerman@tpu.org",
-                            Name = "Uno Thorized",
-                            Role = 0
-                        });
                 });
 
             modelBuilder.Entity("CourseUser", b =>
@@ -384,34 +199,6 @@ namespace BunnySurfers.API.Migrations
 
                     b.HasIndex("UsersUserId");
 
-                    b.ToTable("CourseUser");
-
-                    b.HasData(
-                        new
-                        {
-                            CoursesCourseId = 1,
-                            UsersUserId = 1
-                        },
-                        new
-                        {
-                            CoursesCourseId = 1,
-                            UsersUserId = 2
-                        },
-                        new
-                        {
-                            CoursesCourseId = 1,
-                            UsersUserId = 3
-                        },
-                        new
-                        {
-                            CoursesCourseId = 1,
-                            UsersUserId = 4
-                        },
-                        new
-                        {
-                            CoursesCourseId = 2,
-                            UsersUserId = 1
-                        });
                 });
 
             modelBuilder.Entity("BunnySurfers.API.Entities.Activity", b =>

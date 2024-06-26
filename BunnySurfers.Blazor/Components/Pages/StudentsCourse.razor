@@ -1,0 +1,29 @@
+﻿@page "/student/{StudentId:int}"
+
+<h3>Your Course Info</h3>
+
+@if (getCourseError)
+{
+    <p>Unable to retrieve course info. Please try again later.</p>
+}
+else if (Course is null)
+{
+    <p>You are not currently enrolled in a course.</p>
+}
+else
+{
+    <h4>@Course.Name</h4>
+    <h5>@Course.StartDate.ToShortDateString() - @Course.EndDate.ToShortDateString()</h5>
+
+    <p>@Course.Description</p>
+
+    <p>Teacher: @(Teacher is null ? "None" : Teacher.Name)</p>
+
+    <h5>Other students</h5>
+    <ul>
+        @foreach (var student in Students)
+        {
+            <li>@student.Name; @student.Email</li>
+        }
+    </ul>
+}
