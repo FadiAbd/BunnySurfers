@@ -1,10 +1,10 @@
 ﻿@page "/coursesedit"
-@page "/coursesedit/{courseId:int}"
+@page "/courses edit/{courseId:int}"
 @inject ICourseService CourseService
 @inject NavigationManager Navigation
 
 
-<EditForm Model="course" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm" >
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -55,6 +55,8 @@
         }
         else
         {
+           
+           
             await CourseService.UpdateCourse(course.CourseId, course);
         }
         Navigation.NavigateTo("/courses");
