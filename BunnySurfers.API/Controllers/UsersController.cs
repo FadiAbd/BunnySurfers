@@ -68,6 +68,19 @@ namespace BunnySurfers.API.Controllers
             return NoContent();
         }
 
+        // Delete a user
+        [HttpDelete("{userId:int}")]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user is null)
+                return NotFound($"Could not find user with ID {userId}");
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         // Check that the given UserRole is valid
         private static bool UserRoleIsValid(UserRole role) =>
             Enum.IsDefined(role);
