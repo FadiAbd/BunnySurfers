@@ -2,11 +2,15 @@
 
 namespace BunnySurfers.API.DTOs
 {
-    public class UserForGetDTO
+    public class UserForPostDTO
     {
-        public int UserId { get; set; }
         public UserRole Role { get; set; }
         public required string Name { get; set; }
         public required string Email { get; set; }
+    }
+
+    public class UserForGetDTO : UserForPostDTO
+    {
+        public int UserId { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace BunnySurfers.API.Profiles
         public UserProfile()
         {
             CreateMap<User, UserForGetDTO>();
+            CreateMap<UserForPostDTO, User>();
         }
     }
 }
