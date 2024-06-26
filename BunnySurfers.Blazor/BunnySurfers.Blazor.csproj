@@ -6,12 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BunnySurfers.Blazor-06128abb-9450-4021-a7fe-2a7b1fdcee9d</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
+ <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />                
     <None Include="wwwroot\StartPage.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
@@ -19,13 +16,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
+ </ItemGroup>
+ <ItemGroup>
     <ProjectReference Include="..\BunnySurfers.API\BunnySurfers.API.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+ </ItemGroup>
+ <ItemGroup>
     <Content Update="Components\Layout\Mall1\Components\BodyContent.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
@@ -38,6 +33,5 @@
     <Content Update="Components\Layout\Mall1\Mall.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-  </ItemGroup>
-
+ </ItemGroup>
 </Project>

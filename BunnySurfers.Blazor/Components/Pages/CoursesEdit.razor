@@ -1,0 +1,65 @@
+﻿@page "/coursesedit"
+@page "/courses edit/{courseId:int}"
+@inject ICourseService CourseService
+@inject NavigationManager Navigation
+
+
+<EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm" >
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="course.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputText id="description" class="form-control" @bind-Value="course.Description" />
+    </div>
+    <div class="mb-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="course.StartDate" />
+    </div>
+    <div class="mb-3">
+        <label for="endDate" class="form-label">End Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="course.EndDate" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int courseId { get; set; }
+    private Course course = new Course
+        {
+            Name = "Default Name", 
+            StartDate = DateOnly.FromDateTime(DateTime.Now), 
+            EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)) 
+        };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (courseId != 0)
+        {
+            course = await CourseService.GetCourseById(courseId);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (course.CourseId == 0)
+        {
+            await CourseService.CreateCourse(course);
+        }
+        else
+        {
+           
+           
+            await CourseService.UpdateCourse(course.CourseId, course);
+        }
+        Navigation.NavigateTo("/courses");
+    }
+}
+

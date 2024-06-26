@@ -4,7 +4,5 @@
     {
         None = 0,  // Default; unauthenticated/unauthorized
         Student,
-        Teacher,
-        Admin  // Access to all data
     }
 }
