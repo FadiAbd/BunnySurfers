@@ -2,14 +2,21 @@ using BunnySurfers.API.Data;
 using BunnySurfers.API.Entities;
 using BunnySurfers.API.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
 using System;
 using System.Text.Json.Serialization;
+using BunnySurfers.API.DTOs;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register the DbContext with the dependency injection container
 builder.Services.AddDbContext<LMSDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
+
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Add HttpClient support
 builder.Services.AddHttpClient();

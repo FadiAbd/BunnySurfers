@@ -4,20 +4,27 @@ using BunnySurfers.API.DTOs;
 using BunnySurfers.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BunnySurfers.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ModuleController(LMSDbContext context, IMapper mapper) : ControllerBase
+    public class ModuleController : ControllerBase
     {
-        private readonly LMSDbContext _context = context;
-        private readonly IMapper _mapper = mapper;
+        private readonly LMSDbContext _context;
+        private readonly IMapper _mapper;
 
-        [HttpGet("{ModuleId:int}")]
-        public async Task<ActionResult<Module>> Get(int ModuleId)
+        public ModuleController(LMSDbContext context, IMapper mapper)
         {
-            Module? module = await _context.Modules.FindAsync(ModuleId);
+            _context = context;
+            _mapper = mapper;
+        }
+
+        [HttpGet("{moduleId:int}")]
+        public async Task<ActionResult<Module>> Get(int moduleId)
+        {
+            Module module = await _context.Modules.FindAsync(moduleId);
             if (module == null)
             {
                 return NotFound();
@@ -33,15 +40,17 @@ namespace BunnySurfers.API.Controllers
             var module = _mapper.Map<Module>(moduleDTO);
             _context.Modules.Add(module);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(PostModule), new { module.ModuleId }, module);
+            return CreatedAtAction(nameof(Get), new { moduleId = module.ModuleId }, module);
         }
 
         [HttpDelete("{moduleId:int}")]
         public async Task<IActionResult> DeleteModule(int moduleId)
         {
             var module = await _context.Modules.FindAsync(moduleId);
-            if (module is null)
+            if (module == null)
+            {
                 return NotFound($"No module with ID {moduleId} was found");
+            }
 
             _context.Modules.Remove(module);
             await _context.SaveChangesAsync();
@@ -52,8 +61,10 @@ namespace BunnySurfers.API.Controllers
         public async Task<IActionResult> PutModule(int moduleId, ModuleForPostDTO moduleDTO)
         {
             var module = await _context.Modules.FindAsync(moduleId);
-            if (module is null)
+            if (module == null)
+            {
                 return NotFound($"No module with ID {moduleId} was found");
+            }
 
             // Update module from moduleDTO
             module.Name = moduleDTO.Name;
@@ -68,10 +79,14 @@ namespace BunnySurfers.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (_context.Modules.Find(moduleId) is null)
+                if (_context.Modules.Find(moduleId) == null)
+                {
                     return NotFound($"The module with ID {moduleId} is missing");
+                }
                 else
+                {
                     throw;
+                }
             }
             return NoContent();
         }
