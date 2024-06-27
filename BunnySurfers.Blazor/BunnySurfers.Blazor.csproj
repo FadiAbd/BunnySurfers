@@ -6,6 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BunnySurfers.Blazor-06128abb-9450-4021-a7fe-2a7b1fdcee9d</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Components\Pages\UserManagement.razor~RF33ed7bc6.TMP" />
+  </ItemGroup>
  <ItemGroup>
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />                
     <None Include="wwwroot\StartPage.css" />

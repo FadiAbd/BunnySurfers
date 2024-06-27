@@ -1,0 +1,25 @@
+﻿@page "/usermanagement/{UserId:int}"
+@inject HttpClient httpClient
+@rendermode InteractiveServer
+
+<h3>User Management</h3>
+
+@if (!shouldRender)
+{
+    <p>Loading...</p>
+}
+else if (UserDTO is null)
+{
+    <p>No user with ID @UserId could be found.</p>
+}
+else
+{
+    <EditForm Model="UserDTO" OnSubmit="OnSubmit" Enhance FormName="EditUserForm">
+        <div class="row">
+            <UserRoleDropdown InitialRole="@UserDTO.Role" OnUserRoleChanged="@OnUserRoleChanged" />
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </EditForm>
+}
