@@ -41,15 +41,18 @@ else
                     }
                 </tbody>
             </table>
+            @* <button class="btn btn-primary" @onclick="(() => ShowCourse(courseId))">Create new course</button> *@
         </div>
     </div>
+
+  
+   
 }
 
 @code {
+
     private List<Course> courses = new List<Course>();
     
-   
-
     protected override async Task OnInitializedAsync()
     {
         // Perform asynchronous operation to fetch courses
@@ -58,7 +61,7 @@ else
 
     private void EditCourse(int courseId)
     {
-        NavigationManager.NavigateTo($"/coursesedit/{courseId}");
+        NavigationManager.NavigateTo($"/coursesedit");
     }
 
     private async Task DeleteCourse(int courseId)
@@ -68,4 +71,5 @@ else
         // After deletion, refresh the course list asynchronously
         courses = await CourseService.GetCourses();
     }
+
 }
