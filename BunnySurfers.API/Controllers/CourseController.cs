@@ -46,7 +46,7 @@ namespace BunnySurfers.API.Controllers
             }
             _dbContext.Courses.Add(course);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetCourseById), new { id = course.CourseId }, course);
+            return CreatedAtAction(nameof(CreateCourse), new { id = course.CourseId }, course);
         }
 
         [HttpPut("{courseId}")]
