@@ -4,7 +4,6 @@ using BunnySurfers.API.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-
 using System;
 using System.Text.Json.Serialization;
 using BunnySurfers.API.DTOs;
@@ -28,7 +27,6 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
     });
 
 // Add CORS policy
@@ -52,6 +50,8 @@ builder.Services.AddSwaggerGen(options =>
         Example = new Microsoft.OpenApi.Any.OpenApiString(DateOnly.FromDateTime(DateTime.Now).ToString(DateOnlyJsonConverter.Format))
     }
 ));
+
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 
