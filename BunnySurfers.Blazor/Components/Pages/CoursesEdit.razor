@@ -1,4 +1,4 @@
-﻿@page "/coursesedit"
+﻿@* @page "/coursesedit" *@
 @page "/coursesedit/{courseId:int}"
 @inject ICourseService CourseService
 @inject NavigationManager Navigation
@@ -7,6 +7,7 @@
 <EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm" >
     <DataAnnotationsValidator />
     <ValidationSummary />
+   
 
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
@@ -31,12 +32,14 @@
 @code {
     [Parameter]
     public int courseId { get; set; }
-    private Course course = new Course
-        {
-            Name = "Default Name", 
+
+    Course course = new Course
+    {
+            Name = string.Empty  , 
+            Description = string.Empty ,
             StartDate = DateOnly.FromDateTime(DateTime.Now), 
             EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)) 
-        };
+    };
 
 
     protected override async Task OnInitializedAsync()
@@ -49,6 +52,7 @@
 
     private async Task HandleValidSubmit()
     {
+
         if (course.CourseId == 0)
         {
             await CourseService.CreateCourse(course);
