@@ -6,8 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BunnySurfers.Blazor-06128abb-9450-4021-a7fe-2a7b1fdcee9d</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Components\Pages\Modules.razor" />
+  </ItemGroup>
  <ItemGroup>
-    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />                
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+    <None Include="Components\Pages\Modules.razor" />                
     <None Include="wwwroot\StartPage.css" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
