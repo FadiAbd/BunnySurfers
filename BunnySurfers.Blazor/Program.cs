@@ -25,7 +25,12 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7274"), Timeout = TimeSpan.FromMinutes(4) });
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIRootUrl")
+        ?? throw new Exception("APIRootUrl is missing from appsettings.json")),
+    Timeout = TimeSpan.FromMinutes(4)
+});
 
 
 

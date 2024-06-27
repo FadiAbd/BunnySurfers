@@ -1,4 +1,3 @@
-
 using BunnySurfers.API.Data;
 using BunnySurfers.API.Entities;
 using BunnySurfers.API.Utilities;
@@ -6,33 +5,35 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
+
+// Register the DbContext with the dependency injection container
+builder.Services.AddDbContext<LMSDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LMSDatabase")));
+
+// Add HttpClient support
 builder.Services.AddHttpClient();
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
-        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter()));
-
-// Add CORS policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowBlazorApp",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:7284") // L�gg till ursprunget till din Blazor-app
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
-
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options => {
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
     });
-// The above ignores possible cyclical references in JSON serialization coming from database table relations
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorApp", builder =>
+    {
+        builder.WithOrigins("http://localhost:7284")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -46,7 +47,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -61,5 +62,5 @@ app.UseCors("AllowBlazorApp");
 app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
 
+app.Run();

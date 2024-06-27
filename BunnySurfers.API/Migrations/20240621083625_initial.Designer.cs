@@ -13,7 +13,7 @@ namespace BunnySurfers.API.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
     [Migration("20240621083625_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
