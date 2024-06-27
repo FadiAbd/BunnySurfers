@@ -14,6 +14,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject HttpClient HttpClient
 
 <PageTitle>Register</PageTitle>
 
@@ -55,6 +56,8 @@
 </div>
 
 @code {
+  
+
     private IEnumerable<IdentityError>? identityErrors;
 
     [SupplyParameterFromForm]
@@ -67,40 +70,61 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
-        var user = CreateUser();
+        var userModel = new UserModel
+            {
+                Role = "None", // This might be dynamically set based on your application's logic
+                Name = Input.username,
+                Email = Input.username, // Assuming username is the email
+                UserId = 0 // This might be set based on your application's logic
+            };
 
-        await UserStore.SetUserNameAsync(user, Input.username, CancellationToken.None);
-        var emailStore = GetEmailStore();
-        await emailStore.SetEmailAsync(user, Input.username, CancellationToken.None);
-        var result = await UserManager.CreateAsync(user, Input.Password);
+        var response = await HttpClient.PostAsJsonAsync("https://localhost:7274/api/Users", userModel);
 
-        if (!result.Succeeded)
+        if (response.IsSuccessStatusCode)
         {
-            identityErrors = result.Errors;
-            return;
+            Logger.LogInformation("User created via API.");
+
+            var user = CreateUser();
+            await UserStore.SetUserNameAsync(user, Input.username, CancellationToken.None);
+            var emailStore = GetEmailStore();
+            await emailStore.SetEmailAsync(user, Input.username, CancellationToken.None);
+
+            var result = await UserManager.CreateAsync(user, Input.Password);
+
+            if (!result.Succeeded)
+            {
+                identityErrors = result.Errors;
+                return;
+            }
+
+            Logger.LogInformation("User created a new account with password.");
+
+            var userId = await UserManager.GetUserIdAsync(user);
+            var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+                NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
+                new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
+
+            await EmailSender.SendConfirmationLinkAsync(user, Input.username, HtmlEncoder.Default.Encode(callbackUrl));
+
+            if (UserManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                RedirectManager.RedirectTo(
+                    "Account/RegisterConfirmation",
+                    new() { ["email"] = Input.username, ["returnUrl"] = ReturnUrl });
+            }
+
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            RedirectManager.RedirectTo(ReturnUrl);
         }
-
-        Logger.LogInformation("User created a new account with password.");
-
-        var userId = await UserManager.GetUserIdAsync(user);
-        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-            NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
-
-        await EmailSender.SendConfirmationLinkAsync(user, Input.username, HtmlEncoder.Default.Encode(callbackUrl));
-
-        if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        else
         {
-            RedirectManager.RedirectTo(
-                "Account/RegisterConfirmation",
-                new() { ["email"] = Input.username, ["returnUrl"] = ReturnUrl });
+            var errorContent = await response.Content.ReadAsStringAsync();
+            identityErrors = new List<IdentityError> { new IdentityError { Description = $"Error: {errorContent}" } };
         }
-
-        await SignInManager.SignInAsync(user, isPersistent: false);
-        RedirectManager.RedirectTo(ReturnUrl);
     }
+
 
     private ApplicationUser CreateUser()
     {
@@ -127,7 +151,6 @@
     private sealed class InputModel
     {
         [Required]
-       
         [Display(Name = "username")]
         public string username { get; set; } = "";
 

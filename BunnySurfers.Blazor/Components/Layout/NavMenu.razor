@@ -1,12 +1,65 @@
-﻿<nav>
+﻿@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@using Microsoft.AspNetCore.Identity
+@using BunnySurfers.Blazor.Data
+@inject NavigationManager NavigationManager
+<nav>
     <h2>Menu</h2>
     <ul>
+        @if (role == "Admin" || role == "Teacher")
+        {
+            <li><a href="/TeachersPage">TeachersPage</a></li>
+        }
         <li><a href="/StudentPage">StudentPage</a></li>
-        <li><a href="/TeachersPage">TeachersPage</a></li>
-        <li><a href="/">Logout</a></li>
+        <li>
+            <button @onclick="Logout" class="btn btn-link">Logout</button>
+        </li>
     </ul>
 </nav>
 
 @code {
 
+ private ApplicationUser? currentUser;
+    private UserService.User? user;
+    private string role = string.Empty;
+
+    [Inject]
+    private SignInManager<ApplicationUser> SignInManager { get; set; }
+
+    [Inject]
+    private UserService UserService { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var signInUser = await SignInManager.UserManager.GetUserAsync(SignInManager.Context.User);
+        currentUser = signInUser;
+
+        if (currentUser != null)
+        {
+            try
+            {
+                int userId = int.TryParse(currentUser.Id, out userId) ? userId : 1;
+                user = await UserService.GetUserById(userId);
+
+                if (user == null)
+                {
+                    NavigationManager.NavigateTo("/Account/Login");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, log or rethrow as necessary
+                Console.WriteLine($"Error fetching user data: {ex.Message}");
+                NavigationManager.NavigateTo("/Account/Login");
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    }
+
+    private async Task Logout()
+    {
+       
+        NavigationManager.NavigateTo("/Account/Login");
+    }
 }

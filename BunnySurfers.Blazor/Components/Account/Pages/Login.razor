@@ -4,11 +4,12 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using BunnySurfers.Blazor.Data
-
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UserService UserService
 
 <PageTitle>Log in</PageTitle>
 
@@ -24,7 +25,7 @@
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
                     <InputText @bind-Value="Input.username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
-                    <label for="username" class="form-label">username</label>
+                    <label for="username" class="form-label">Username</label>
                     <ValidationMessage For="() => Input.username" class="text-danger" />
                 </div>
                 <div class="form-floating mb-3">
@@ -87,13 +88,32 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+
+            var user = await UserManager.FindByNameAsync(Input.username);
+
+            if (user != null)
+            {
+                if (await UserManager.IsInRoleAsync(user, "Admin"))
+                {
+                    NavigationManager.NavigateTo("/TeachersPage");
+                }
+                else if (await UserManager.IsInRoleAsync(user, "Student"))
+                {
+                    NavigationManager.NavigateTo("/StudentPage");
+                }
+                else
+                {
+                    // Redirect to a default page or show an error
+                }
+            }
+            else
+            {
+                errorMessage = "User not found.";
+            }
         }
         else if (result.RequiresTwoFactor)
         {
@@ -115,7 +135,6 @@
     private sealed class InputModel
     {
         [Required]
-        
         public string username { get; set; } = "";
 
         [Required]

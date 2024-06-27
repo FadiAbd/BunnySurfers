@@ -10,9 +10,26 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Json;
 
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Blazored.LocalStorage;
+
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+var apiUrl = builder.Configuration.GetValue<string>("APIRootUrl")
+    ?? throw new Exception("APIRootUrl is missing from appsettings.json");
 
+builder.Services.AddHttpClient("BunnySurfers.API", client => client.BaseAddress = new Uri(apiUrl));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -21,19 +38,27 @@ builder.Services.AddRazorComponents()
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
+
+
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<UserService>();
+
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddHttpClient("BunnySurfers.API", client => client.BaseAddress = new Uri(apiUrl));
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+builder.Services.AddHttpContextAccessor();
 
 
 
 
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIRootUrl")
-        ?? throw new Exception("APIRootUrl is missing from appsettings.json")),
-    Timeout = TimeSpan.FromMinutes(4)
-});
+
+
+
 
 
 
@@ -47,9 +72,7 @@ builder.Services.AddAuthentication(options =>
 })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

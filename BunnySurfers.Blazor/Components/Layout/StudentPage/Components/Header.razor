@@ -1,12 +1,70 @@
-﻿<div style="display: flex; align-items: center;">
-    <h1 style="margin-left: 50%;margin-right: 20%;">Student</h1>
+﻿@using Microsoft.AspNetCore.Identity
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Header> Logger
+@inject NavigationManager NavigationManager
+@using BunnySurfers.Blazor.Data
 
-    <div style="display: flex; align-items: center;">
-        <p style="margin-right: 10px;">Status: Online</p>
-        <p style="margin-right: 10px;">Username: User</p>
-        <div style="width: 30px; height: 30px; border-radius: 50%; background-color: #ccc;"></div>
+
+@if (currentUser != null)
+{
+    <div class="user-info">
+        <h1>Welcome, @currentUser.UserName!</h1>
+        @if (user != null)
+        {
+            <p>ID: @user.UserId</p>
+            <p>Role: @user.Role</p>
+            <p>Username: @user.Name</p>
+            <div class="avatar"></div>
+        }
+        else
+        {
+            <p>Unable to fetch user information.</p>
+        }
+        <button @onclick="Logout">Logout</button>
     </div>
-</div>
-@code {
+}
+else
+{
+    <p>User not authenticated. Please <a href="/Account/Login">log in</a>.</p>
+}
 
+@code {
+    private ApplicationUser? currentUser;
+    private UserService.User? user;
+    [Inject]
+    private UserService UserService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the currently signed in user using SignInManager
+        currentUser = await SignInManager.UserManager.GetUserAsync(SignInManager.Context.User);
+
+        if (currentUser != null)
+        {
+            // Try to parse the user ID from string to int
+            int userId;
+            bool parseSuccess = int.TryParse(currentUser.Id, out userId);
+
+            if (!parseSuccess)
+            {
+                userId = 1; // Default user ID if parsing fails
+            }
+
+            // Fetch user information based on current user ID
+            user = await UserService.GetUserById(userId);
+        }
+        else
+        {
+            // Redirect to login page if user is not authenticated
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    }
+
+    private async Task Logout()
+    {
+        await SignInManager.SignOutAsync();
+        Logger.LogInformation("User logged out.");
+        NavigationManager.NavigateTo("/Account/Login");
+    }
 }
