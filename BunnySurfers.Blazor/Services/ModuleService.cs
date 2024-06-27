@@ -4,38 +4,29 @@ namespace BunnySurfers.Blazor.Services
 {
     public class ModuleService : IModuleService
     {
-        private readonly HttpClient _httpClient;
-
-        public ModuleService(HttpClient httpClient)
+        public Task CreateModule(Module module)
         {
-            _httpClient = httpClient;
-        }
-        public async Task CreateModule(Module module)
-        {
-            var response = await _httpClient.PostAsJsonAsync($"api/Module", module);
-            response.EnsureSuccessStatusCode();
+            throw new NotImplementedException();
         }
 
-        public async Task DeleteModule(int moduleId)
+        public Task DeleteModule(int moduleId)
         {
-            var response = await _httpClient.DeleteAsync($"api/Module/{moduleId}");
-            response.EnsureSuccessStatusCode();
+            throw new NotImplementedException();
         }
 
-        public async Task<Module> GetModuleById(int moduleId)
+        public Task<Module> GetModuleById(int moduleId)
         {
-            return await _httpClient.GetFromJsonAsync<Module>($"api/Module/{moduleId}");
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Module>> GetModules()
+        public Task<List<Module>> GetModules()
         {
-            return await _httpClient.GetFromJsonAsync<List<Module>>("api/Module");
+            throw new NotImplementedException();
         }
 
-        public async Task UpdateModule(int moduleId, Module module)
+        public Task UpdateModule(int moduleId, Module module)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Module/{moduleId}", module);
-            response.EnsureSuccessStatusCode();
+            throw new NotImplementedException();
         }
     }
 }

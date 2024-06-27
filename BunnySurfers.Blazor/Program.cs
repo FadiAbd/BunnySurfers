@@ -24,7 +24,6 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.AddScoped<IModuleService, ModuleService>();
 
 
 
