@@ -32,9 +32,10 @@ builder.Services.AddControllers()
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazorApp", builder =>
+    options.AddPolicy("AllowBlazorApp", policybuilder =>
     {
-        builder.WithOrigins("http://localhost:7284")
+        policybuilder.WithOrigins(builder.Configuration.GetValue<string>("BlazorRootURL")
+            ?? throw new Exception("BlazorRootURL must be configured in appsettings.json"))
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
