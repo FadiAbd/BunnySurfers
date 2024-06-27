@@ -41,13 +41,14 @@ else
                     }
                 </tbody>
             </table>
-            @* <button class="btn btn-primary" @onclick="(() => ShowCourse(courseId))">Create new course</button> *@
         </div>
     </div>
 }
 
 @code {
     private List<Course> courses = new List<Course>();
+    
+   
 
     protected override async Task OnInitializedAsync()
     {
