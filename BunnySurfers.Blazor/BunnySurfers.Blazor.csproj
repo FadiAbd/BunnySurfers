@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <Content Remove="Components\Pages\Modules.razor" />
+    <Content Remove="Components\Pages\ModulesEdit.razor" />
   </ItemGroup>
  <ItemGroup>
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
-    <None Include="Components\Pages\Modules.razor" />                
+    <None Include="Components\Pages\Modules.razor" />
+    <None Include="Components\Pages\ModulesEdit.razor" />                
     <None Include="wwwroot\StartPage.css" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
@@ -38,5 +40,11 @@
     <Content Update="Components\Layout\TeachersPage\Mall.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+ </ItemGroup>
+ <ItemGroup>
+   <UpToDateCheckInput Remove="Components\Pages\ModulesEdit.razor" />
+ </ItemGroup>
+ <ItemGroup>
+   <_ContentIncludedByDefault Remove="Components\Pages\ModulesEdit.razor" />
  </ItemGroup>
 </Project>
