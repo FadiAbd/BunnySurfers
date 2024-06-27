@@ -21,7 +21,7 @@ namespace BunnySurfers.API.Controllers
         public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
         {
             List<Activity> activities = await _context.Activities.ToListAsync();
-            var activityDTOs = _mapper.Map<ActivityGetDTO>(activities);
+            var activityDTOs = _mapper.Map<List<ActivityGetDTO>>(activities);
             return Ok(activityDTOs);
         }
 
@@ -47,9 +47,17 @@ namespace BunnySurfers.API.Controllers
             if (!ActivityTypeIsValid(inputActivity.ActivityType))
                 return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
 
+            Module? module = await _context.Modules.FindAsync(inputActivity.ModuleId);
+            if (module == null)
+                return BadRequest($"No module with number {inputActivity.ModuleId} exists.");
+
+            if (!await ActivityIsSchedulable(_mapper.Map<Activity>(inputActivity), module, id))
+                return BadRequest("The module has no room for an activity with these times.");
+
             Activity? dbActivity = await _context.Activities.FindAsync(id);
             if (dbActivity == null)
                 return NotFound($"Could not find activity with id {id}.");
+
             _mapper.Map(inputActivity, dbActivity);
             await _context.SaveChangesAsync();
             return NoContent();
@@ -62,6 +70,13 @@ namespace BunnySurfers.API.Controllers
         {
             if (!ActivityTypeIsValid(inputActivity.ActivityType))
                 return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
+
+            Module? module = await _context.Modules.FindAsync(inputActivity.ModuleId);
+            if (module == null)
+                return BadRequest($"No module with number {inputActivity.ModuleId} exists.");
+
+            if (! await ActivityIsSchedulable(_mapper.Map<Activity>(inputActivity), module, null))
+                return BadRequest("The module has no room for an activity with these times.");
             Activity dbActivity = _mapper.Map<Activity>(inputActivity);
 
             _context.Activities.Add(dbActivity);
@@ -92,6 +107,26 @@ namespace BunnySurfers.API.Controllers
 
         private static string ActivityTypeInvalidErrorMessage(ActivityType type) =>
             $"The given ActivityType {type} was not valid. Valid values are: {EnumUtilities.DescribeValidValues<ActivityType>()}";
+
+        private async Task<bool> ActivityIsSchedulable(Activity activity, Module module, int? activityId)
+        {
+            if (module.StartDate > DateOnly.FromDateTime(activity.StartTime))
+            {
+                return false;
+            }
+            if (module.EndDate < DateOnly.FromDateTime(activity.EndTime))
+            {
+                return false;
+            }
+            List<Activity> siblingActivities = await _context.Activities.Where(a => a.ModuleId == activity.ModuleId).Where(a=> a.ActivityId != activityId).ToListAsync();
+            foreach(Activity sibling in siblingActivities)
+            {
+                if (sibling.EndTime < activity.StartTime) break;
+                if (sibling.StartTime > activity.EndTime) break;
+                return false;
+            }
+            return true;
+        }
 
     }
 }
