@@ -17,26 +17,26 @@ namespace BunnySurfers.API.Controllers
 
         // Get all users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserForGetDTO>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserGetDTO>>> GetAllUsers()
         {
             var users = await _context.Users.ToListAsync();
-            var userDTOs = _mapper.Map<IEnumerable<UserForGetDTO>>(users);
+            var userDTOs = _mapper.Map<IEnumerable<UserGetDTO>>(users);
             return Ok(userDTOs);
         }
 
         // Get a single specified user
         [HttpGet("{userId:int}")]
-        public async Task<ActionResult<UserForGetDTO>> GetSingleUser(int userId)
+        public async Task<ActionResult<UserGetDTO>> GetSingleUser(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user is null)
                 return NotFound($"Could not find user with ID {userId}");
-            return Ok(_mapper.Map<UserForGetDTO>(user));
+            return Ok(_mapper.Map<UserGetDTO>(user));
         }
 
         // Add a new user
         [HttpPost]
-        public async Task<ActionResult<UserForGetDTO>> PostUser(UserForPostDTO userDTO)
+        public async Task<ActionResult<UserGetDTO>> PostUser(UserEditDTO userDTO)
         {
             // Check that the UserRole is valid
             if (!UserRoleIsValid(userDTO.Role))
@@ -46,12 +46,12 @@ namespace BunnySurfers.API.Controllers
             var user = _mapper.Map<User>(userDTO);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(PostUser), _mapper.Map<UserForGetDTO>(user));
+            return CreatedAtAction(nameof(PostUser), _mapper.Map<UserGetDTO>(user));
         }
 
         // Modify a user
         [HttpPut("{userId:int}")]
-        public async Task<IActionResult> PutUser(int userId, UserForPostDTO userDTO)
+        public async Task<IActionResult> PutUser(int userId, UserEditDTO userDTO)
         {
             // Check that the UserRole is valid
             if (!UserRoleIsValid(userDTO.Role))

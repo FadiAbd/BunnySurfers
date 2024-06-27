@@ -8,7 +8,8 @@ namespace BunnySurfers.API.Profiles
     {
         public ModuleProfile()
         {
-            CreateMap<ModuleForPostDTO, Module>();
+            CreateMap<Module, ModuleGetDTO>();
+            CreateMap<ModuleEditDTO, Module>();
         }
     }
 }

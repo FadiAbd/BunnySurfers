@@ -34,7 +34,7 @@ namespace BunnySurfers.API.Controllers
                 return BadRequest($"The user with ID {studentId} is not a student");
 
             var course = student.Courses.FirstOrDefault();
-            var courseDTO = (course is null) ? null : _mapper.Map<CourseForStudentViewDTO>(course);
+            var courseDTO = (course is null) ? null : _mapper.Map<CourseGetDTO>(course);
             return Ok(courseDTO);
         }
     }
