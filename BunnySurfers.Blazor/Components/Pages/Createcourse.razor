@@ -1,10 +1,12 @@
-﻿@* @page "/coursesedit" *@
-@page "/coursesedit/{courseId:int}"
+﻿@page "/createcourse"
 @inject ICourseService CourseService
 @inject NavigationManager Navigation
+ @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 
-<EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm" >
+ <h1>Create Course</h1>
+
+<EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
    
@@ -31,24 +33,16 @@
 
 @code {
     [Parameter]
-    public int courseId { get; set; }
+    public int? courseId { get; set; }
 
-    Course course = new Course
-    {
-            Name = string.Empty  , 
-            Description = string.Empty ,
-            StartDate = DateOnly.FromDateTime(DateTime.Now), 
-            EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)) 
-    };
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (courseId != 0)
+    private Course course = new Course
         {
-            course = await CourseService.GetCourseById(courseId);
-        }
-    }
+            Name = "", // Initialize with an appropriate default value
+            Description = "",
+            StartDate = DateOnly.FromDateTime(DateTime.Today),
+            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30))
+        };
+
 
     private async Task HandleValidSubmit()
     {
@@ -57,13 +51,7 @@
         {
             await CourseService.CreateCourse(course);
         }
-        else
-        {
-           
-           
-            await CourseService.UpdateCourse(course.CourseId, course);
-        }
-        Navigation.NavigateTo("/courses");
+
+        Navigation.NavigateTo("/TeachersPage");
     }
 }
-

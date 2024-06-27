@@ -1,17 +1,20 @@
-﻿@page "/courses"
-@inject ICourseService CourseService
-@inject NavigationManager NavigationManager
-@inject HttpClient Http
-@rendermode @(new InteractiveServerRenderMode(prerender:false))
+﻿ @inject ICourseService CourseService
+ @inject NavigationManager NavigationManager
+ @inject HttpClient Http
+ @rendermode @(new InteractiveServerRenderMode(prerender:false))
+@*  @rendermode InteractiveServer *@
 
 <h2 style="text-align: center;">Courses</h2>
 
+@* @if (courses == null) *@
 @if (courses.Count == 0)
 {
     <p><em>Loading courses...</em></p>
+
 }
 else
 {
+
     <div class="container mt-5" style="margin: 0 auto; text-align: center;">
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
@@ -21,8 +24,7 @@ else
                         <th>Description</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Actions</th>
-                        <th></th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -33,39 +35,40 @@ else
                             <td>@course.Description</td>
                             <td class="text-nowrap">@course.StartDate.ToString("yyyy-MM-dd")</td>
                             <td class="text-nowrap">@course.EndDate.ToString("yyyy-MM-dd")</td>
-                            <td>
-                                <button class="btn btn-primary" @onclick="(() => EditCourse(course.CourseId))">Edit</button>
-                                <button class="btn btn-danger" @onclick="(() => DeleteCourse(course.CourseId))">Delete</button>
-                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
+            @* <button class="btn btn-primary" @onclick="(() => ShowCourse(courseId))">Create new course</button> *@
         </div>
     </div>
+
+
+
 }
 
 @code {
-    private List<Course> courses = new List<Course>();
-    
+    // private List<Course> courses;
     private List<Course> courses = new List<Course>();
 
     protected override async Task OnInitializedAsync()
     {
-        // Perform asynchronous operation to fetch courses
         courses = await CourseService.GetCourses();
+        {
+
+            var data = await Http.GetStringAsync("/api/Course");
+            var uri = "https://localhost:7274/api/Course";
+            Console.WriteLine($"Requesting URI: {uri}"); data = await Http.GetStringAsync(uri);
+        }
     }
 
-    private void EditCourse(int courseId)
-    {
-        NavigationManager.NavigateTo($"/coursesedit/{courseId}");
-    }
+   
 
-    private async Task DeleteCourse(int courseId)
-    {
-        // Call asynchronous delete method from service
-        await CourseService.DeleteCourse(courseId);
-        // After deletion, refresh the course list asynchronously
-        courses = await CourseService.GetCourses();
-    }
+   
+
 }
+
+
+
+
+
