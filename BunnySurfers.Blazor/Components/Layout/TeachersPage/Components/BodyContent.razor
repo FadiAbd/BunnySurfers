@@ -2,17 +2,15 @@
  @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <div class="body-content">
+    <div><Courses/></div>
     <div> <button class="btn btn-primary" @onclick="CreateNewCourse">Create New Course</button></div>
-    <div>Box 2</div>
     <div>Box 3</div>
     <div>Box 4</div>
 </div>
 @code {
 
-
-
     public void CreateNewCourse()
     {
-        NavigationManager.NavigateTo($"/coursesedit");
+        NavigationManager.NavigateTo($"/createcourse");
     }
 }

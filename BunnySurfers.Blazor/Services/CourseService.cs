@@ -1,5 +1,8 @@
 ﻿using BunnySurfers.API.Entities;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace BunnySurfers.Blazor.Services
 {
@@ -11,6 +14,7 @@ namespace BunnySurfers.Blazor.Services
         {
             _httpClient = httpClient;
         }
+
         public async Task<List<Course>> GetCourses()
         {
             return await _httpClient.GetFromJsonAsync<List<Course>>("api/Course");
@@ -27,9 +31,9 @@ namespace BunnySurfers.Blazor.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UpdateCourse(int courseId, Course course)
+        public async Task UpdateCourse(int courseId, Course courseyew)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Course/{courseId}", course);
+            var response = await _httpClient.PutAsJsonAsync($"api/Course/{courseId}", courseyew);
             response.EnsureSuccessStatusCode();
         }
 

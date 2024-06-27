@@ -1,26 +1,15 @@
-﻿using System.ComponentModel;
+﻿using BunnySurfers.API.Entities;
 
-namespace BunnySurfers.API.Entities
+public class Course
 {
-    public class Course
-    {
-        public int CourseId { get; set; }
-        public required string Name { get; set; }
-        public string Description { get; set; } = string.Empty;
-      
-        public DateOnly StartDate { get; set; }
-     
-        public DateOnly EndDate { get; set; }
+    public int CourseId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-        // Courses have many students
-        // Courses may have many teachers?
-        public List<User> Users { get; set; } = [];
+    public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    public DateOnly EndDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
-        // Courses are composed of many modules
-        public List<Module> Modules { get; set; } = [];
-
-        // A course may contain documents belonging to itself
-        // (i.e. not to any modules or activities under it)
-        public List<Document> Documents { get; set; } = [];
-    }
+    public List<User> Users { get; set; } = new List<User>();
+    public List<Module> Modules { get; set; } = new List<Module>();
+    public List<Document> Documents { get; set; } = new List<Document>();
 }
