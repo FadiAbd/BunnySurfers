@@ -25,7 +25,9 @@ namespace BunnySurfers.API.Controllers
                 .Include(u => u.Courses)
                 .ThenInclude(c => c.Modules)
                 .ThenInclude(m => m.Activities)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(u => u.UserId == studentId);
+
             if (student is null)
                 return NotFound($"A user with ID {studentId} could not be found");
             if (student.Role != UserRole.Student)

@@ -1,23 +1,21 @@
 ﻿using System.Text.Json;
+using BunnySurfers.API.DTOs;
 using BunnySurfers.API.Entities;
 using Microsoft.AspNetCore.Components;
 
 namespace BunnySurfers.Blazor.Components.Pages
 {
-    public partial class StudentsCourse
+    public partial class StudentView
     {
         [Parameter]
         public int StudentId { get; set; }
 
         [Inject]
-        public IHttpClientFactory ClientFactory { get; set; } = null!;
-        [Inject]
-        private IConfiguration Configuration { get; set; } = null!;
-        private string APIRootUrl { get; set; } = string.Empty;
+        private HttpClient ApiClient { get; set; } = null!;
 
-        public Course? Course { get; set; } = null;
-        public User? Teacher { get; set; } = null;
-        public IEnumerable<User> Students { get; set; } = [];
+        public CourseForStudentViewDTO? Course { get; set; } = null;
+        public UserForStudentViewDTO? Teacher { get; set; } = null;
+        public IEnumerable<UserForStudentViewDTO> Students { get; set; } = [];
 
         private bool getCourseError;
         private bool shouldRender;
@@ -27,14 +25,9 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            // Get the root URL for API calls from the configuration (appsettings.json)
-            APIRootUrl = Configuration.GetValue<string>("APIRootUrl")
-                ?? throw new Exception("Need to configure 'APIRootUrl' in appsettings.json");
-
             // Set up and execute the API call
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{APIRootUrl}/api/Student/{StudentId}");
-            var client = ClientFactory.CreateClient();
-            var response = await client.SendAsync(request);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/StudentView/{StudentId}");
+            var response = await ApiClient.SendAsync(request);
 
             // If the API call is unsuccessful, return now
             if (!response.IsSuccessStatusCode)
@@ -46,7 +39,9 @@ namespace BunnySurfers.Blazor.Components.Pages
 
             // Parse the API response into a Course with participants
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            Course = await JsonSerializer.DeserializeAsync<Course?>(responseStream);
+            Course = await JsonSerializer.DeserializeAsync<CourseForStudentViewDTO?>(responseStream);
+            //var responseString = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine(responseString);
             if (Course is not null)
             {
                 Teacher = Course.Users.FirstOrDefault(u => u.Role == UserRole.Teacher);
