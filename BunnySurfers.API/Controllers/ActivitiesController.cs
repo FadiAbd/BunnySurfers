@@ -21,13 +21,13 @@ namespace BunnySurfers.API.Controllers
         public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
         {
             List<Activity> activities = await _context.Activities.ToListAsync();
-            var activityDTOs = _mapper.Map<ActivityForGetDTO>(activities);
+            var activityDTOs = _mapper.Map<ActivityGetDTO>(activities);
             return Ok(activityDTOs);
         }
 
         // GET: api/Activities/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ActivityForGetDTO>> GetActivity(int id)
+        public async Task<ActionResult<ActivityGetDTO>> GetActivity(int id)
         {
             var activity = await _context.Activities.FindAsync(id);
 
@@ -36,13 +36,13 @@ namespace BunnySurfers.API.Controllers
                 return NotFound($"Could not find activity with id {id}.");
             }
 
-            return Ok(_mapper.Map<ActivityForGetDTO>(activity));
+            return Ok(_mapper.Map<ActivityGetDTO>(activity));
         }
 
         // PUT: api/Activities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutActivity(int id, ActivityForPutDTO inputActivity)
+        public async Task<IActionResult> PutActivity(int id, ActivityEditDTO inputActivity)
         {
             if (!ActivityTypeIsValid(inputActivity.ActivityType))
                 return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
@@ -58,7 +58,7 @@ namespace BunnySurfers.API.Controllers
         // POST: api/Activities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Activity>> PostActivity(ActivityForPostDTO inputActivity)
+        public async Task<ActionResult<Activity>> PostActivity(ActivityEditDTO inputActivity)
         {
             if (!ActivityTypeIsValid(inputActivity.ActivityType))
                 return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
