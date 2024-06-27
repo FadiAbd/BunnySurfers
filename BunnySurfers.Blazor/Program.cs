@@ -1,3 +1,5 @@
+using BunnySurfers.API.Entities;
+using System.Text.Json.Serialization;
 using BunnySurfers.Blazor.Components;
 using BunnySurfers.Blazor.Components.Account;
 using BunnySurfers.Blazor.Data;
@@ -5,6 +7,7 @@ using BunnySurfers.Blazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Json;
 
 
 
@@ -57,8 +60,17 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-// Add HTTP client for accessing the BunnySurfers API
-builder.Services.AddHttpClient();
+// Configure JSON options for dealing with enums
+//builder.Services.ConfigureHttpJsonOptions(options =>
+//{
+//    options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
+//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<ActivityType>());
+//});
+//builder.Services.Configure<JsonOptions>(options =>
+//{
+//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
+//});
 
 var app = builder.Build();
 
