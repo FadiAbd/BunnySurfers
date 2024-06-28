@@ -11,9 +11,15 @@
 else if (UserDTO is null)
 {
     <p>No user with ID @UserId could be found.</p>
+    <NavLink href="/usermanagement">Back to user list</NavLink>
 }
 else
 {
+    @if (!string.IsNullOrWhiteSpace(StatusMessage))
+    {
+        <div class="@StatusClass">@StatusMessage</div>
+    }
+
     <EditForm Model="UserDTO" OnSubmit="OnSubmit" Enhance FormName="EditUserForm">
         <div class="row">
             <label for="name" class="col-form-label">Name: </label>
@@ -30,4 +36,6 @@ else
             <button type="submit">Submit</button>
         </div>
     </EditForm>
+
+    <NavLink href="/usermanagement">Back to user list</NavLink>
 }
