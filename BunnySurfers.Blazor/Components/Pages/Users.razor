@@ -1,0 +1,52 @@
+﻿@page "/users"
+@rendermode InteractiveServer
+
+<h3>List of users</h3>
+
+@if (!shouldRender)
+{
+    <p>Loading users...</p>
+}
+else if (getUsersError || UserList is null)
+{
+    <p>There was an error loading from the database. Please try again later.</p>
+}
+else if (UserList.Count() == 0)
+{
+    <p>There are currently no users in the database.</p>
+    <NavLink href="/usermanagement/add">Add new user</NavLink>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="@StatusClass">@StatusMessage</div>
+    }
+
+    <NavLink href="/usermanagement/add">Add new user</NavLink>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in UserList)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>
+                        <NavLink href=@($"/usermanagement/{user.UserId}")>Edit</NavLink>
+                        <button type="button" @onclick="@(_ => DeleteUser(user.UserId))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

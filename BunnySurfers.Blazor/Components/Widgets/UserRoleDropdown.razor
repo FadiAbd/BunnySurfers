@@ -1,0 +1,13 @@
+﻿<label for="role" class="col-form-label">User role: </label>
+<div>
+    <InputSelect class="form-select" @bind-Value="@SelectedUserRoleInt">
+        <option value="-1" selected="@(selectedRoleInt == -1)" hidden disabled>Choose role</option>
+        @foreach (var kvp in UserRoleDict)
+        {
+            <option value="@kvp.Key" 
+                    selected="@(InitialRole is null ? false : kvp.Key == (int)InitialRole)">
+                @kvp.Value
+            </option>
+        }
+    </InputSelect>
+</div>

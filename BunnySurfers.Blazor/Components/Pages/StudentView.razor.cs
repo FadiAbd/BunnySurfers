@@ -40,8 +40,6 @@ namespace BunnySurfers.Blazor.Components.Pages
             // Parse the API response into a Course with participants
             using var responseStream = await response.Content.ReadAsStreamAsync();
             Course = await JsonSerializer.DeserializeAsync<CourseForStudentViewDTO?>(responseStream);
-            //var responseString = await response.Content.ReadAsStringAsync();
-            //Console.WriteLine(responseString);
             if (Course is not null)
             {
                 Teacher = Course.Users.FirstOrDefault(u => u.Role == UserRole.Teacher);

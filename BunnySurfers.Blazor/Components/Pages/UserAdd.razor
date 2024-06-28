@@ -1,0 +1,43 @@
+﻿@page "/users/add"
+@rendermode InteractiveServer
+
+@if (IsSaved)
+{
+    <div class="alert @StatusClass">@StatusMessage</div>
+
+    <NavLink href="/usermanagement">Back to list of users</NavLink>
+}
+else
+{
+    <h3>Add new user</h3>
+
+    <EditForm Enhance Model="UserDTO" FormName="AddUserForm"
+        OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+
+        <DataAnnotationsValidator />
+        <ValidationSummary></ValidationSummary>
+
+        <div class="row">
+            <label for="name" class="col-form-label">Name: </label>
+            <div>
+                <InputText id="name" class="form-control" @bind-Value="@UserDTO.Name" placeholder="Enter name"></InputText>
+            </div>
+            <ValidationMessage For="@(() => UserDTO.Name)"></ValidationMessage>
+        </div>
+        <div class="row">
+            <label for="email" class="col-form-label">Email: </label>
+            <div>
+                <InputText id="email" class="form-control" @bind-Value="@UserDTO.Email" placeholder="Enter email"></InputText>
+            </div>
+            <ValidationMessage For="@(() => UserDTO.Email)"></ValidationMessage>
+        </div>
+        <div class="row">
+            <div class="row d-inline-flex">
+                <UserRoleDropdown OnUserRoleChanged="@OnUserRoleChanged" />
+            </div>
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </EditForm>
+}
