@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Security.Policy;
+using System.Text.Json;
+using System.Web;
 using BunnySurfers.API.DTOs;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -36,7 +38,10 @@ namespace BunnySurfers.Blazor.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<UserGetDTO?> FindUserByEmail(string email) =>
-            await ApiClient.GetFromJsonAsync<UserGetDTO?>($"api/users/find?email={email}");
+        public async Task<UserGetDTO?> FindUserByEmail(string email)
+        {
+            var newUrl = new Uri($"api/users/find?email={HttpUtility.UrlEncode(email)}", UriKind.Relative);
+            return await ApiClient.GetFromJsonAsync<UserGetDTO?>(newUrl);
+        }
     }
 }

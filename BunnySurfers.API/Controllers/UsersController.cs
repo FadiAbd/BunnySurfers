@@ -83,8 +83,14 @@ namespace BunnySurfers.API.Controllers
 
         // Search for a user
         [HttpGet("find")]
-        public async Task<ActionResult<UserGetDTO?>> FindUserByEmail([FromQuery(Name = "email")] string email) =>
-            Ok(await _context.Users.FirstOrDefaultAsync(u => u.Email == email));
+        public async Task<ActionResult<UserGetDTO?>> FindUserByEmail([FromQuery(Name = "email")] string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user is null)
+                return NotFound($"No user with email {email} was found");
+            else
+                return Ok(user);
+        }
 
         // Check that the given UserRole is valid
         private static bool UserRoleIsValid(UserRole role) =>
