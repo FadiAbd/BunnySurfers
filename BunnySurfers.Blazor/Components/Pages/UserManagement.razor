@@ -16,6 +16,14 @@ else
 {
     <EditForm Model="UserDTO" OnSubmit="OnSubmit" Enhance FormName="EditUserForm">
         <div class="row">
+            <label for="name" class="col-form-label">Name: </label>
+            <InputText id="name" class="form-control" @bind-Value="@UserDTO.Name"></InputText>
+        </div>
+        <div class="row">
+            <label for="email" class="col-form-label">Email: </label>
+            <InputText id="email" class="form-control" @bind-Value="@UserDTO.Email"></InputText>
+        </div>
+        <div class="row d-inline-flex">
             <UserRoleDropdown InitialRole="@UserDTO.Role" OnUserRoleChanged="@OnUserRoleChanged" />
         </div>
         <div>
