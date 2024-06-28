@@ -11,6 +11,7 @@ namespace BunnySurfers.Blazor.Services
         public UserService(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7274/");
         }
 
         public async Task<User?> GetUserById(int UserId)

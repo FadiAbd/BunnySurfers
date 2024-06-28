@@ -10,9 +10,11 @@ namespace BunnySurfers.Blazor.Services
     {
         private readonly HttpClient _httpClient;
 
+
         public CourseService(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7274/");
         }
 
         public async Task<List<Course>> GetCourses()

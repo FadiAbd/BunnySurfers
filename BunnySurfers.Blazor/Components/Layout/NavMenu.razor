@@ -39,21 +39,21 @@
                 int userId = int.TryParse(currentUser.Id, out userId) ? userId : 1;
                 user = await UserService.GetUserById(userId);
 
-                if (user == null)
+                if (user.Role == null)
                 {
-                    NavigationManager.NavigateTo("/Account/Login");
+                    NavigationManager.NavigateTo("/studentpage");
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions, log or rethrow as necessary
                 Console.WriteLine($"Error fetching user data: {ex.Message}");
-                NavigationManager.NavigateTo("/Account/Login");
+                NavigationManager.NavigateTo("/");
             }
         }
         else
         {
-            NavigationManager.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/");
         }
     }
 

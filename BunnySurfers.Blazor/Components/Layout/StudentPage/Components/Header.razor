@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@* @rendermode @(new InteractiveServerRenderMode(prerender:false)) *@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Header> Logger
 @inject NavigationManager NavigationManager
@@ -42,6 +42,9 @@ else
 
         if (currentUser != null)
         {
+            Logger.LogInformation($"Current user ID: {currentUser.Id}");
+            Logger.LogInformation($"Current user name: {currentUser.UserName}");
+
             // Try to parse the user ID from string to int
             int userId;
             bool parseSuccess = int.TryParse(currentUser.Id, out userId);
@@ -49,13 +52,16 @@ else
             if (!parseSuccess)
             {
                 userId = 1; // Default user ID if parsing fails
+                Logger.LogWarning("Failed to parse user ID, using default ID: 1");
             }
 
             // Fetch user information based on current user ID
             user = await UserService.GetUserById(userId);
+            Logger.LogInformation($"Fetched user: {user?.Name}");
         }
         else
         {
+            Logger.LogWarning("No current user found, redirecting to login.");
             // Redirect to login page if user is not authenticated
             NavigationManager.NavigateTo("/Account/Login");
         }
