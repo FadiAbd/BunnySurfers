@@ -45,7 +45,7 @@
 
 
 @code {
-    private Module module = new Module();
+    private Module module = new Module(){Name = ""};
 
     [Parameter]
     public int moduleId { get; set; }
@@ -68,13 +68,18 @@
                 Name = module.Name, // Initialize with an appropriate default value
                 Description = module.Description,
                 StartDate = module.StartDate,
-                EndDate = module.EndDate
-                        CourseId = module.CourseId
+                EndDate = module.EndDate,
+                CourseId = module.CourseId
             };
 
 
         await ModuleService.UpdateModule(moduleId, module);
         NavigationManager.NavigateTo("/TeachersPage");
         StateHasChanged(); // Se till att anropa StateHasChanged() här
+    }
+
+    private void HandleValidSubmit()
+    {
+        throw new NotImplementedException();
     }
 }
