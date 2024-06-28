@@ -26,6 +26,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IReturnUrlService, ReturnUrlService>();
 
 
 
