@@ -3,6 +3,7 @@ using System.Text.Json;
 using BunnySurfers.API.DTOs;
 using BunnySurfers.API.Entities;
 using BunnySurfers.API.Utilities;
+using BunnySurfers.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BunnySurfers.Blazor.Components.Pages
@@ -11,6 +12,8 @@ namespace BunnySurfers.Blazor.Components.Pages
     {
         [Inject]
         public HttpClient ApiClient { get; set; } = null!;
+        [Inject]
+        public IUserService UserService { get; set; } = null!;
 
         [Parameter]
         public int UserId { get; set; }
@@ -22,21 +25,16 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            // Set up and execute the API call
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/Users/{UserId}");
-            var response = await ApiClient.SendAsync(request);
-
-            // If the API call is unsuccessful, return now
-            if (!response.IsSuccessStatusCode)
+            try
+            {
+                UserDTO = await UserService.GetUser(UserId);
+            }
+            catch (HttpRequestException)
             {
                 getUserError = true;
                 shouldRender = true;
                 return;
             }
-
-            // Parse the API response into a User
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            UserDTO = await JsonSerializer.DeserializeAsync<UserGetDTO?>(responseStream);
             shouldRender = true;
         }
 
