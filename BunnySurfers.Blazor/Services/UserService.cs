@@ -1,4 +1,5 @@
 ﻿using BunnySurfers.API.DTOs;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace BunnySurfers.Blazor.Services
 {
@@ -28,6 +29,18 @@ namespace BunnySurfers.Blazor.Services
         {
             var response = await ApiClient.DeleteAsync($"api/users/{userId}");
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<UserGetDTO?> FindUser(string name, string email)
+        {
+            string url = "api/users/find";
+            Dictionary<string, string?> queryParams = new()
+            {
+                { "name", name },
+                { "email", email }
+            };
+            var newUrl = QueryHelpers.AddQueryString(url, queryParams);
+            return await ApiClient.GetFromJsonAsync<UserGetDTO?>(newUrl);
         }
     }
 }
