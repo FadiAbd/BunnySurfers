@@ -37,8 +37,8 @@ else
                             <td class="text-nowrap">@module.EndDate.ToString("yyyy-MM-dd")</td>
                             <td>@module.CourseId</td>
                             <td>
-                                <button class="btn btn-primary" @onclick="(() => EditModule(module.moduleId))">Edit</button>
-                                <button class="btn btn-danger" @onclick="(() => DeleteModule(module.moduleId))">Delete</button>
+                                <button class="btn btn-primary" @onclick="(() => EditModule(module.ModuleId))">Edit</button>
+                                <button class="btn btn-danger" @onclick="(() => DeleteModule(module.ModuleId))">Delete</button>
                             </td>
                         </tr>
                     }
@@ -49,14 +49,16 @@ else
 }
 
 @code {
+    [Inject]
+    public IModuleService ModuleService { get; set; } = null!;
 
-    private List<Module> modules = newList<Modules>();
+    private List<Module> modules = new List<Module>();
 
    
 
     protected override async Task OnInitializedAsync()
     {
-        modules = await ModuleService.GrtModules();
+        modules = await ModuleService.GetModules();
     }
 
     private void EditModule(int moduleId)
