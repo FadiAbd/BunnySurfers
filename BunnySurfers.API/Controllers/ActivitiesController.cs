@@ -18,7 +18,7 @@ namespace BunnySurfers.API.Controllers
 
         // GET: api/Activities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
+        public async Task<ActionResult<IEnumerable<ActivityGetDTO>>> GetActivities()
         {
             List<Activity> activities = await _context.Activities.ToListAsync();
             var activityDTOs = _mapper.Map<List<ActivityGetDTO>>(activities);
@@ -44,15 +44,9 @@ namespace BunnySurfers.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutActivity(int id, ActivityEditDTO inputActivity)
         {
-            if (!ActivityTypeIsValid(inputActivity.ActivityType))
-                return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
-
-            Module? module = await _context.Modules.FindAsync(inputActivity.ModuleId);
-            if (module == null)
-                return BadRequest($"No module with number {inputActivity.ModuleId} exists.");
-
-            if (!await ActivityIsSchedulable(_mapper.Map<Activity>(inputActivity), module, id))
-                return BadRequest("The module has no room for an activity with these times.");
+            BadRequestObjectResult? causeToReject = await CauseToReject(inputActivity, id);
+            if (causeToReject != null)
+                return causeToReject;
 
             Activity? dbActivity = await _context.Activities.FindAsync(id);
             if (dbActivity == null)
@@ -68,15 +62,10 @@ namespace BunnySurfers.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Activity>> PostActivity(ActivityEditDTO inputActivity)
         {
-            if (!ActivityTypeIsValid(inputActivity.ActivityType))
-                return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
-
-            Module? module = await _context.Modules.FindAsync(inputActivity.ModuleId);
-            if (module == null)
-                return BadRequest($"No module with number {inputActivity.ModuleId} exists.");
-
-            if (! await ActivityIsSchedulable(_mapper.Map<Activity>(inputActivity), module, null))
-                return BadRequest("The module has no room for an activity with these times.");
+            BadRequestObjectResult? causeToReject = await CauseToReject(inputActivity, null);
+            if (causeToReject != null)
+                return causeToReject;
+            
             Activity dbActivity = _mapper.Map<Activity>(inputActivity);
 
             _context.Activities.Add(dbActivity);
@@ -108,6 +97,22 @@ namespace BunnySurfers.API.Controllers
         private static string ActivityTypeInvalidErrorMessage(ActivityType type) =>
             $"The given ActivityType {type} was not valid. Valid values are: {EnumUtilities.DescribeValidValues<ActivityType>()}";
 
+        private async Task<BadRequestObjectResult?> CauseToReject(ActivityEditDTO inputActivity, int? activityId)
+        {
+            // This only controls the output for invalid numerical input. Invalid strings are apparently detected at an earlier point.
+            if (!ActivityTypeIsValid(inputActivity.ActivityType))
+                return BadRequest(ActivityTypeInvalidErrorMessage(inputActivity.ActivityType));
+
+            Module? module = await _context.Modules.FindAsync(inputActivity.ModuleId);
+            if (module == null)
+                return BadRequest($"No module with number {inputActivity.ModuleId} exists.");
+
+            if (!await ActivityIsSchedulable(_mapper.Map<Activity>(inputActivity), module, activityId))
+                return BadRequest("The module has no room for an activity with these times.");
+
+            return null;
+        }
+
         private async Task<bool> ActivityIsSchedulable(Activity activity, Module module, int? activityId)
         {
             if (module.StartDate > DateOnly.FromDateTime(activity.StartTime))
@@ -121,8 +126,8 @@ namespace BunnySurfers.API.Controllers
             List<Activity> siblingActivities = await _context.Activities.Where(a => a.ModuleId == activity.ModuleId).Where(a=> a.ActivityId != activityId).ToListAsync();
             foreach(Activity sibling in siblingActivities)
             {
-                if (sibling.EndTime < activity.StartTime) break;
-                if (sibling.StartTime > activity.EndTime) break;
+                if (sibling.EndTime < activity.StartTime) continue;
+                if (sibling.StartTime > activity.EndTime) continue;
                 return false;
             }
             return true;
