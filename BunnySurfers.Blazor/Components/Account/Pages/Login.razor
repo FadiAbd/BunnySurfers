@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using BunnySurfers.Blazor.Data
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject IReturnUrlService ReturnUrlService
+@inject UserManager<ApplicationUser> UserManager
 
 <PageTitle>Log in</PageTitle>
 
@@ -66,6 +66,7 @@
 </div>
 
 @code {
+
     private string? errorMessage;
 
     [CascadingParameter]
@@ -85,24 +86,20 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
         if (result.Succeeded)
         {
-            Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrlService.GetReturnUrl());
-        }
-        else if (result.RequiresTwoFactor)
-        {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrlService.GetReturnUrl(), ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
+            // Användaren är inloggad, omdirigera till StudentPage med användarnamnet som queryparameter
+            var returnUrlParams = new Dictionary<string, object?>
+            {
+                { "userName", Input.username }
+            };
+
+            var readOnlyParams = returnUrlParams.ToDictionary(kv => kv.Key, kv => (object?)kv.Value);
+            var returnUrlWithUserInfo = NavigationManager.GetUriWithQueryParameters("StudentPage", readOnlyParams);
+
+            RedirectManager.RedirectTo(returnUrlWithUserInfo);
         }
         else
         {
