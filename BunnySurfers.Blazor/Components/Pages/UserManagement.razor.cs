@@ -8,8 +8,6 @@ namespace BunnySurfers.Blazor.Components.Pages
     public partial class UserManagement
     {
         [Inject]
-        public HttpClient ApiClient { get; set; } = null!;
-        [Inject]
         public IUserService UserService { get; set; } = null!;
 
         [Parameter]
@@ -32,8 +30,6 @@ namespace BunnySurfers.Blazor.Components.Pages
             catch (HttpRequestException)
             {
                 getUserError = true;
-                shouldRender = true;
-                return;
             }
             shouldRender = true;
         }
