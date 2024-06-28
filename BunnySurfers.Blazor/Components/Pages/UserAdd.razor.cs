@@ -26,15 +26,13 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         public async Task HandleValidSubmit()
         {
-            var success = await UserService.CreateUser(UserDTO);
-            if (!success)
+            var appUser = await ApplicationUserService.CreateNewUser(UserDTO);
+            if (appUser is null)
             {
                 StatusClass = "alert-danger";
                 StatusMessage = "There was an error adding the user to the database";
                 return;
             }
-
-            await ApplicationUserService.AddUser(UserDTO);
             StatusClass = "alert-success";
             StatusMessage = "User added successfully";
             IsSaved = true;

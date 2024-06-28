@@ -1,18 +1,15 @@
 ﻿using BunnySurfers.API.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using BunnySurfers.Blazor.Services;
 
 namespace BunnySurfers.Blazor.Data
 {
-    public class SeedUserData(ApplicationDbContext context)
+    public class SeedUserData(ApplicationDbContext context, IUserService userService)
     {
         private readonly ApplicationDbContext _context = context;
-
-        public void ClearUserDatabase()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
-        }
+        private readonly IUserService _userService = userService;
+        private readonly ApplicationUserService _appService = new(context, userService);
 
         public async Task SeedUserRoles()
         {
@@ -29,29 +26,52 @@ namespace BunnySurfers.Blazor.Data
             await _context.SaveChangesAsync();
         }
         
-        public async Task SeedUserDatabase()
+        public async Task SeedAdminUser()
         {
-            var user = new ApplicationUser
+            // Create an ApplicationUser with all fields except UserId
+            var appUser = new ApplicationUser
             {
+                Name = "Admin McAdmin",
                 Email = "admin@admin.com",
+                Role = UserRole.Admin,
                 NormalizedEmail = "ADMIN@ADMIN.COM",
                 UserName = "Admin",
                 NormalizedUserName = "ADMIN",
                 EmailConfirmed = true,
             };
+            if (appUser is null)
+                return;
+            var password = new PasswordHasher<ApplicationUser>();
+            var hashed = password.HashPassword(appUser, "asd,./123");
+            appUser.PasswordHash = hashed;
 
-            if (!_context.Users.Any(u => u.UserName == user.UserName))
+            if (!await _appService.IsAppUserInAppDatabase(appUser))
             {
-                var password = new PasswordHasher<ApplicationUser>();
-                var hashed = password.HashPassword(user, "asd,./123");
-                user.PasswordHash = hashed;
-
-                var userStore = new UserStore<ApplicationUser>(_context);
-                await userStore.CreateAsync(user);
-                await userStore.AddToRoleAsync(user, UserRole.Admin.ToString().ToUpperInvariant());
+                // First add the ApplicationUser to the API database
+                appUser = await _appService.AddAppUserToAPIDatabase(appUser, inAppDatabase: false);
+                if (appUser is null)
+                    return;
+                // Then add this appUser (with UserId) to the app database
+                await _appService.AddAppUserToAppDatabase(appUser);
             }
+        }
 
-            await _context.SaveChangesAsync();
+        public async Task SeedAppDatabaseFromAPIDatabase()
+        {
+            // Now copy over all the users from the API
+            var userGetDTOs = await _userService.GetAllUsers();
+            if (userGetDTOs is null)
+                return;
+            foreach (var userGetDTO in userGetDTOs)
+                await _appService.AddAPIUserToAppDatabase(userGetDTO);
+        }
+
+        public async Task SeedAppDatabase()
+        {
+            await _context.Database.EnsureCreatedAsync();
+            await SeedUserRoles();
+            await SeedAdminUser();
+            await SeedAppDatabaseFromAPIDatabase();
         }
     }
 }

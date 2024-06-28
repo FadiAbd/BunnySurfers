@@ -1,4 +1,5 @@
-﻿using BunnySurfers.API.DTOs;
+﻿using System.Text.Json;
+using BunnySurfers.API.DTOs;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace BunnySurfers.Blazor.Services
@@ -13,10 +14,14 @@ namespace BunnySurfers.Blazor.Services
         public async Task<UserGetDTO?> GetUser(int userId) =>
             await ApiClient.GetFromJsonAsync<UserGetDTO?>($"api/users/{userId}");
 
-        public async Task<bool> CreateUser(UserEditDTO userDTO)
+        public async Task<UserGetDTO?> CreateUser(UserEditDTO userEditDTO)
         {
-            var response = await ApiClient.PostAsJsonAsync("api/users", userDTO);
-            return response.IsSuccessStatusCode;
+            var response = await ApiClient.PostAsJsonAsync("api/users", userEditDTO);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<UserGetDTO?>(stream);
         }
 
         public async Task<bool> UpdateUser(int userId, UserEditDTO userDTO)
@@ -31,16 +36,7 @@ namespace BunnySurfers.Blazor.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<UserGetDTO?> FindUser(string name, string email)
-        {
-            string url = "api/users/find";
-            Dictionary<string, string?> queryParams = new()
-            {
-                { "name", name },
-                { "email", email }
-            };
-            var newUrl = QueryHelpers.AddQueryString(url, queryParams);
-            return await ApiClient.GetFromJsonAsync<UserGetDTO?>(newUrl);
-        }
+        public async Task<UserGetDTO?> FindUserByEmail(string email) =>
+            await ApiClient.GetFromJsonAsync<UserGetDTO?>($"api/users/find?email={email}");
     }
 }

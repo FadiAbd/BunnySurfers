@@ -6,9 +6,9 @@ namespace BunnySurfers.Blazor.Services
     {
         Task<IEnumerable<UserGetDTO>?> GetAllUsers();
         Task<UserGetDTO?> GetUser(int userId);
-        Task<bool> CreateUser(UserEditDTO userDTO);
+        Task<UserGetDTO?> CreateUser(UserEditDTO userDTO);
         Task<bool> UpdateUser(int userId, UserEditDTO userDTO);
         Task<bool> DeleteUser(int userId);
-        Task<UserGetDTO?> FindUser(string name, string email);
+        Task<UserGetDTO?> FindUserByEmail(string email);
     }
 }

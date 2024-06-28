@@ -47,6 +47,9 @@ namespace BunnySurfers.Blazor.Components.Account.Pages
                 return;
 
             var user = CreateUser();
+            user.UserId = Input.UserDTO!.UserId;
+            user.Name = Input.UserDTO!.Name;
+            user.Role = Input.UserDTO!.Role;
 
             await UserStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
             var emailStore = GetEmailStore();
@@ -133,13 +136,13 @@ namespace BunnySurfers.Blazor.Components.Account.Pages
 
             public async Task<bool> RetrieveUser(IUserService userService, List<IdentityError> identityErrors)
             {
-                UserDTO = await userService.FindUser(Name, Email);
+                UserDTO = await userService.FindUserByEmail(Email);
                 if (UserDTO is null)
                 {
                     identityErrors.Add(new()
                     {
                         Code = nameof(RetrieveUser),
-                        Description = $"Could not find the user with Name='{Name}', Email='{Email}' in the API database."
+                        Description = $"Could not find the user with Email='{Email}' in the API database."
                     });
                     return false;
                 }
