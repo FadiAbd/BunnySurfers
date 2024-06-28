@@ -1,12 +1,34 @@
-﻿<div style="display: flex; align-items: center;">
-    <h1 style="margin-left: 50%;margin-right: 20%;">Student</h1>
+﻿@inherits LayoutComponentBase
+
+
+<div style="display: flex; align-items: center;">
+    <h1 style="margin-right: 20px;">Student</h1>
 
     <div style="display: flex; align-items: center;">
-        <p style="margin-right: 10px;">Status: Online</p>
-        <p style="margin-right: 10px;">Username: User</p>
-        <div style="width: 30px; height: 30px; border-radius: 50%; background-color: #ccc;"></div>
+        @if (!string.IsNullOrEmpty(UserId))
+        {
+            <p style="margin-right: 10px;">ID: @UserId</p>
+        }
+        @if (!string.IsNullOrEmpty(UserName))
+        {
+            <p style="margin-right: 10px;">Username: @UserName</p>
+        }
+        @if (!string.IsNullOrEmpty(Role))
+        {
+            <p style="margin-right: 10px;">Role: @Role</p>
+        }
+
+        <div style="width: 30px; height: 30px; border-radius: 50%; background-color: #ccc; margin-left: 10px;"></div>
     </div>
 </div>
-@code {
 
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    [Parameter]
+    public string UserName { get; set; }
+
+    [Parameter]
+    public string Role { get; set; }
 }

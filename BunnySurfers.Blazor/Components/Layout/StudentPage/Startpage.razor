@@ -1,13 +1,18 @@
 ﻿@page "/StudentPage"
 @inherits LayoutComponentBase
 
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
 <div class="body2">
     <div class="nav">
         <BunnySurfers.Blazor.Components.Layout.NavMenu />
     </div>
     <div class="main-container">
         <div class="header">
-            <BunnySurfers.Blazor.Components.Layout.StudentPage.Components.Header />
+            <BunnySurfers.Blazor.Components.Layout.StudentPage.Components.Header UserId="@userId"
+                                                                                 UserName="@userName"
+                                                                                 Role="@role" />
         </div>
         <div class="body-content">
             <BunnySurfers.Blazor.Components.Layout.StudentPage.Components.BodyContent />
@@ -19,5 +24,107 @@
 </div>
 
 @code {
+    private string userId;
+    private string userName;
+    private string role;
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+            if (query.TryGetValue("userName", out var userNameValue))
+            {
+                userName = userNameValue;
+            }
+
+            // Hämta userId baserat på userName från API
+            await LoadUserDetails();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fel vid initiering av sidan: {ex.Message}");
+        }
+    }
+
+    private async Task LoadUserDetails()
+    {
+        try
+        {
+            // Hämta alla användare från API
+            var response = await HttpClient.GetAsync("https://localhost:7274/api/users");
+            if (response.IsSuccessStatusCode)
+            {
+                var users = await response.Content.ReadFromJsonAsync<List<UserDTO>>();
+
+                // Loopa igenom alla användare och hitta den som matchar userName
+                var user = users.FirstOrDefault(u => u.UserName == userName);
+
+                if (user != null)
+                {
+                    // Hämta userId för den matchande användaren
+                    userId = user.UserId;
+
+                    // Hämta all information om användaren baserat på userId
+                    await LoadUserInfo(userId);
+                }
+                else
+                {
+                    Console.WriteLine($"Användare med userName {userName} hittades inte.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Kunde inte hämta användarinformation från API. Statuskod: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fel vid hämtning av användarinformation: {ex.Message}");
+        }
+    }
+
+    private async Task LoadUserInfo(string userId)
+    {
+        try
+        {
+            // Bygg URL med userId
+            string apiUrl = $"https://localhost:7274/api/users/{userId}";
+
+            var response = await HttpClient.GetAsync(apiUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var userDetails = await response.Content.ReadFromJsonAsync<UserDetailsDTO>();
+                if (userDetails != null)
+                {
+                    role = userDetails.Role;
+                    // Lägg till andra egenskaper efter behov
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Kunde inte hämta användarinformation från API för userId {userId}. Statuskod: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fel vid hämtning av användarinformation för userId {userId}: {ex.Message}");
+        }
+    }
+
+    public class UserDTO
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        // Lägg till andra egenskaper efter behov
+    }
+
+    public class UserDetailsDTO
+    {
+        public string UserId { get; set; }
+        public string Role { get; set; }
+        // Lägg till andra egenskaper efter behov
+    }
 }
