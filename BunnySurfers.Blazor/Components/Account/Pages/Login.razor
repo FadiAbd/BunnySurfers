@@ -24,9 +24,9 @@
                 <hr />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
+                    <InputText @bind-Value="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
                     <label for="username" class="form-label">Username</label>
-                    <ValidationMessage For="() => Input.username" class="text-danger" />
+                    <ValidationMessage For="() => Input.Username" class="text-danger" />
                 </div>
                 <div class="form-floating mb-3">
                     <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
@@ -88,26 +88,32 @@
 
     public async Task LoginUser()
     {
-        var result = await SignInManager.PasswordSignInAsync(Input.username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var result = await SignInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
 
-            var user = await UserManager.FindByNameAsync(Input.username);
-
+            var user = await UserManager.FindByNameAsync(Input.Username);
             if (user != null)
             {
-                if (await UserManager.IsInRoleAsync(user, "Admin"))
+                int userId = int.TryParse(user.Id, out userId) ? userId : 1;
+                var userData = await UserService.GetUserById(userId);
+
+                if (userData != null && !string.IsNullOrEmpty(userData.Role) && userData.Role != "None")
                 {
-                    NavigationManager.NavigateTo("/TeachersPage");
-                }
-                else if (await UserManager.IsInRoleAsync(user, "Student"))
-                {
-                    NavigationManager.NavigateTo("/StudentPage");
+                    if (userData.Role == "Admin" || userData.Role == "Teacher")
+                    {
+                        NavigationManager.NavigateTo("/TeachersPage");
+                    }
+                    else
+                    {
+                        NavigationManager.NavigateTo("/StudentPage");
+                    }
                 }
                 else
                 {
-                    NavigationManager.NavigateTo("/TeachersPage");
+                    // If role is "None" or null, navigate to a default page
+                    NavigationManager.NavigateTo("/studentpage");
                 }
             }
             else
@@ -135,7 +141,7 @@
     private sealed class InputModel
     {
         [Required]
-        public string username { get; set; } = "";
+        public string Username { get; set; } = "";
 
         [Required]
         [DataType(DataType.Password)]

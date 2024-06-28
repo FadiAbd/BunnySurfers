@@ -1,7 +1,8 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender:false))
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using Microsoft.AspNetCore.Identity
 @using BunnySurfers.Blazor.Data
 @inject NavigationManager NavigationManager
+
 <nav>
     <h2>Menu</h2>
     <ul>
@@ -17,8 +18,7 @@
 </nav>
 
 @code {
-
- private ApplicationUser? currentUser;
+    private ApplicationUser? currentUser;
     private UserService.User? user;
     private string role = string.Empty;
 
@@ -27,39 +27,38 @@
 
     [Inject]
     private UserService UserService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var signInUser = await SignInManager.UserManager.GetUserAsync(SignInManager.Context.User);
-        currentUser = signInUser;
-
-        if (currentUser != null)
+        try
         {
-            try
-            {
-                int userId = int.TryParse(currentUser.Id, out userId) ? userId : 1;
-                user = await UserService.GetUserById(userId);
+            var signInUser = await SignInManager.UserManager.GetUserAsync(SignInManager.Context.User);
+            currentUser = signInUser;
 
-                if (user.Role == null)
-                {
-                    NavigationManager.NavigateTo("/studentpage");
-                }
-            }
-            catch (Exception ex)
+            if (currentUser == null)
             {
-                // Handle exceptions, log or rethrow as necessary
-                Console.WriteLine($"Error fetching user data: {ex.Message}");
-                NavigationManager.NavigateTo("/");
+                // If the user is null, exit the method early
+                return;
+            }
+
+            int userId = int.TryParse(currentUser.Id, out userId) ? userId : 1;
+            user = await UserService.GetUserById(userId);
+
+            if (user != null)
+            {
+                role = user.Role ?? string.Empty;
             }
         }
-        else
+        catch (Exception ex)
         {
-            NavigationManager.NavigateTo("/");
+            // Handle exceptions, log or rethrow as necessary
+            Console.WriteLine($"Error fetching user data: {ex.Message}");
         }
     }
 
     private async Task Logout()
     {
-       
+        await SignInManager.SignOutAsync();
         NavigationManager.NavigateTo("/Account/Login");
     }
 }
