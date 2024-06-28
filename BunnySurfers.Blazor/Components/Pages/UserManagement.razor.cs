@@ -1,8 +1,5 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using BunnySurfers.API.DTOs;
+﻿using BunnySurfers.API.DTOs;
 using BunnySurfers.API.Entities;
-using BunnySurfers.API.Utilities;
 using BunnySurfers.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 
@@ -22,6 +19,9 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         protected bool getUserError;
         protected bool shouldRender;
+        protected bool putUserError;
+        protected string StatusClass = string.Empty;
+        protected string StatusMessage = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
@@ -45,9 +45,20 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         protected async Task OnSubmit()
         {
-            // Set up and execute the API call
-            var response = await ApiClient.PutAsJsonAsync($"api/Users/{UserId}", UserDTO);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                await UserService.UpdateUser(UserId, UserDTO!);
+            }
+            catch (HttpRequestException)
+            {
+                putUserError = true;
+                StatusClass = "alert-danger";
+                StatusMessage = "An error occurred while updating the user";
+                return;
+            }
+
+            StatusClass = "alert-success";
+            StatusMessage = "User successfully updated";
         }
     }
 }
