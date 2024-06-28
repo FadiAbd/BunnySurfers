@@ -25,7 +25,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 
@@ -60,18 +60,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-
-// Configure JSON options for dealing with enums
-//builder.Services.ConfigureHttpJsonOptions(options =>
-//{
-//    options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<ActivityType>());
-//});
-//builder.Services.Configure<JsonOptions>(options =>
-//{
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
-//});
 
 var app = builder.Build();
 
