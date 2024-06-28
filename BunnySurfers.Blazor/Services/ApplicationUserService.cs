@@ -73,5 +73,33 @@ namespace BunnySurfers.Blazor.Services
                 return null;
             return await AddAPIUserToAppDatabase(userGetDTO);
         }
+
+        public async Task<IEnumerable<UserGetDTO>> GetAllUsers()
+        {
+            var appUsers = await _context.Users.ToListAsync();
+            return appUsers.Select(a => a.ToUserGetDTO()).ToList();
+        }
+
+        public async Task<bool> DeleteUser(int userId)
+        {
+            var appUser = await _context.Users.FirstOrDefaultAsync(a => a.UserId == userId);
+            var user = await _userService.GetUser(userId);
+            if (appUser is null || user is null)
+                return false;
+
+            _context.Users.Remove(appUser);
+            await _context.SaveChangesAsync();
+            await _userService.DeleteUser(userId);
+            return true;
+        }
+
+        public async Task<ApplicationUser?> GetUser(int userId) =>
+            await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+        public async Task UpdateUser(ApplicationUser appUser)
+        {
+            var userStore = new UserStore<ApplicationUser>(_context);
+            await userStore.UpdateAsync(appUser);
+        }
     }
 }

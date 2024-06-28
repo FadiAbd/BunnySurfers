@@ -1,5 +1,6 @@
 ﻿using BunnySurfers.API.DTOs;
 using BunnySurfers.API.Entities;
+using BunnySurfers.Blazor.Data;
 using BunnySurfers.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 
@@ -9,11 +10,14 @@ namespace BunnySurfers.Blazor.Components.Pages
     {
         [Inject]
         public IUserService UserService { get; set; } = null!;
+        [Inject]
+        public IApplicationUserService AppService { get; set; } = null!;
 
         [Parameter]
         public int UserId { get; set; }
 
         public UserEditDTO? UserDTO { get; set; } = null;
+        public ApplicationUser? AppUser { get; set; } = null;
 
         protected bool getUserError;
         protected bool shouldRender;
@@ -31,12 +35,14 @@ namespace BunnySurfers.Blazor.Components.Pages
             {
                 getUserError = true;
             }
+            AppUser = await AppService.GetUser(UserId);
             shouldRender = true;
         }
 
         protected void OnUserRoleChanged(int selectedRoleInt)
         {
             UserDTO!.Role = (UserRole)selectedRoleInt;
+            AppUser!.Role = (UserRole)selectedRoleInt;
         }
 
         protected async Task OnSubmit()
@@ -44,6 +50,7 @@ namespace BunnySurfers.Blazor.Components.Pages
             try
             {
                 await UserService.UpdateUser(UserId, UserDTO!);
+                await AppService.UpdateUser(AppUser!);
             }
             catch (HttpRequestException)
             {

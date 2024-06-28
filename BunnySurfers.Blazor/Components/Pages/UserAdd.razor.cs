@@ -8,8 +8,6 @@ namespace BunnySurfers.Blazor.Components.Pages
     public partial class UserAdd
     {
         [Inject]
-        public IUserService UserService { get; set; } = null!;
-        [Inject]
         public IApplicationUserService ApplicationUserService { get; set; } = null!;
 
         [SupplyParameterFromForm]

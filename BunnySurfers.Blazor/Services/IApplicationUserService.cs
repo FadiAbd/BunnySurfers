@@ -14,5 +14,9 @@ namespace BunnySurfers.Blazor.Services
         Task<ApplicationUser?> AddAPIUserToAppDatabase(UserGetDTO userGetDTO);
         Task<ApplicationUser?> AddAppUserToAPIDatabase(ApplicationUser appUser, bool inAppDatabase);
         Task<ApplicationUser?> CreateNewUser(UserEditDTO userEditDTO);
+        Task<IEnumerable<UserGetDTO>> GetAllUsers();
+        Task<bool> DeleteUser(int userId);
+        Task<ApplicationUser?> GetUser(int userId);
+        Task UpdateUser(ApplicationUser appUser);
     }
 }

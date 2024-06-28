@@ -7,9 +7,9 @@ namespace BunnySurfers.Blazor.Components.Pages
     public partial class Users
     {
         [Inject]
-        public IUserService UserService { get; set; } = null!;
+        public IApplicationUserService AppUserService { get; set; } = null!;
         [Inject]
-        public NavigationManager navManager { get; set; } = null!;
+        public NavigationManager NavManager { get; set; } = null!;
 
         public IEnumerable<UserGetDTO>? UserList { get; set; } = null;
 
@@ -22,7 +22,7 @@ namespace BunnySurfers.Blazor.Components.Pages
         {
             try
             {
-                UserList = await UserService.GetAllUsers();
+                UserList = await AppUserService.GetAllUsers();
             }
             catch (HttpRequestException)
             {
@@ -38,7 +38,7 @@ namespace BunnySurfers.Blazor.Components.Pages
 
         public async Task DeleteUser(int userId)
         {
-            var success = await UserService.DeleteUser(userId);
+            var success = await AppUserService.DeleteUser(userId);
             if (success)
             {
                 StatusClass = "alert-success";
