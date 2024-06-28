@@ -61,12 +61,16 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddTransient<SeedUserData>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    using var scope = app.Services.CreateScope();
+    await scope.ServiceProvider.GetRequiredService<SeedUserData>().SeedUserDatabase();
 }
 else
 {
