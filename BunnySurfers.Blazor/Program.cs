@@ -1,5 +1,4 @@
 using BunnySurfers.API.Entities;
-using System.Text.Json.Serialization;
 using BunnySurfers.Blazor.Components;
 using BunnySurfers.Blazor.Components.Account;
 using BunnySurfers.Blazor.Data;
@@ -7,97 +6,79 @@ using BunnySurfers.Blazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.Json;
-
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Blazored.LocalStorage;
-
-
-
-
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder; // Lägg till nödvändiga namespaces
 
 var builder = WebApplication.CreateBuilder(args);
+
 var apiUrl = builder.Configuration.GetValue<string>("APIRootUrl")
     ?? throw new Exception("APIRootUrl is missing from appsettings.json");
 
 builder.Services.AddHttpClient("BunnySurfers.API", client => client.BaseAddress = new Uri(apiUrl));
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddCascadingAuthenticationState();
+
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
-
-
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddHttpClient("BunnySurfers.API", client => client.BaseAddress = new Uri(apiUrl));
 builder.Services.AddScoped<IIdentityService, IdentityService>();
-
 builder.Services.AddHttpContextAccessor();
 
-
-
-
-
-
-
-
-
-
-
-
-
-builder.Services.AddAuthentication(options =>
+builder.Services.AddAntiforgery(options =>
 {
-    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-})
-    .AddIdentityCookies();
+    options.HeaderName = "X-CSRF-TOKEN"; // Anpassa efter behov
+});
 
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.SlidingExpiration = true;
+        // Konfigurera övriga alternativ efter behov
+    });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
-
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddSignInManager()
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    });
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-// Configure JSON options for dealing with enums
-//builder.Services.ConfigureHttpJsonOptions(options =>
-//{
-//    options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<ActivityType>());
-//});
-//builder.Services.Configure<JsonOptions>(options =>
-//{
-//    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
-//});
+// Lägg till AddControllers för att registrera MVC-tjänster
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -105,19 +86,25 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 
+// Använd endpoints för att konfigurera slutpunkter
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
