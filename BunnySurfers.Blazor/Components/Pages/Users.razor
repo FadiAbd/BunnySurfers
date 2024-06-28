@@ -14,7 +14,7 @@ else if (getUsersError || UserList is null)
 else if (UserList.Count() == 0)
 {
     <p>There are currently no users in the database.</p>
-    <NavLink href="/usermanagement/add">Add new user</NavLink>
+    <NavLink href="/users/add">Add new user</NavLink>
 }
 else
 {
@@ -23,7 +23,7 @@ else
         <div class="@StatusClass">@StatusMessage</div>
     }
 
-    <NavLink href="/usermanagement/add">Add new user</NavLink>
+    <NavLink href="/users/add">Add new user</NavLink>
 
     <table>
         <thead>
@@ -42,7 +42,7 @@ else
                     <td>@user.Email</td>
                     <td>@user.Role</td>
                     <td>
-                        <NavLink href=@($"/usermanagement/{user.UserId}")>Edit</NavLink>
+                        <NavLink href=@($"/users/edit/{user.UserId}")>Edit</NavLink>
                         <button type="button" @onclick="@(_ => DeleteUser(user.UserId))">Delete</button>
                     </td>
                 </tr>

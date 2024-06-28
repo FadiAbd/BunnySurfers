@@ -9,6 +9,8 @@ namespace BunnySurfers.Blazor.Components.Pages
     {
         [Inject]
         public IUserService UserService { get; set; } = null!;
+        [Inject]
+        public IApplicationUserService ApplicationUserService { get; set; } = null!;
 
         [SupplyParameterFromForm]
         public UserEditDTO UserDTO { get; set; } = null!;
@@ -25,17 +27,17 @@ namespace BunnySurfers.Blazor.Components.Pages
         public async Task HandleValidSubmit()
         {
             var success = await UserService.CreateUser(UserDTO);
-            if (success)
-            {
-                StatusClass = "alert-success";
-                StatusMessage = "Employee updated successfully";
-                IsSaved = true;
-            }
-            else
+            if (!success)
             {
                 StatusClass = "alert-danger";
-                StatusMessage = "There was an error adding the employee to the database";
+                StatusMessage = "There was an error adding the user to the database";
+                return;
             }
+
+            await ApplicationUserService.AddUser(UserDTO);
+            StatusClass = "alert-success";
+            StatusMessage = "User added successfully";
+            IsSaved = true;
         }
 
         public void HandleInvalidSubmit()
