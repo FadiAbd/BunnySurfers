@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BunnySurfers.Blazor.Components.Pages
 {
-    public partial class UserManagement
+    public partial class UserEdit
     {
         [Inject]
         public IUserService UserService { get; set; } = null!;

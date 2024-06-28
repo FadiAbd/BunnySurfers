@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Components;
 
 namespace BunnySurfers.Blazor.Components.Pages
 {
-    public partial class UserList
+    public partial class Users
     {
         [Inject]
         public IUserService UserService { get; set; } = null!;
         [Inject]
         public NavigationManager navManager { get; set; } = null!;
 
-        public IEnumerable<UserGetDTO>? Users { get; set; } = null;
+        public IEnumerable<UserGetDTO>? UserList { get; set; } = null;
 
         protected bool getUsersError;
         protected bool shouldRender;
@@ -22,7 +22,7 @@ namespace BunnySurfers.Blazor.Components.Pages
         {
             try
             {
-                Users = await UserService.GetAllUsers();
+                UserList = await UserService.GetAllUsers();
             }
             catch (HttpRequestException)
             {

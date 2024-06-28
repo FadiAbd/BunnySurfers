@@ -1,4 +1,4 @@
-﻿@page "/usermanagement"
+﻿@page "/users"
 @rendermode InteractiveServer
 
 <h3>List of users</h3>
@@ -7,11 +7,11 @@
 {
     <p>Loading users...</p>
 }
-else if (getUsersError || Users is null)
+else if (getUsersError || UserList is null)
 {
     <p>There was an error loading from the database. Please try again later.</p>
 }
-else if (Users.Count() == 0)
+else if (UserList.Count() == 0)
 {
     <p>There are currently no users in the database.</p>
     <NavLink href="/usermanagement/add">Add new user</NavLink>
@@ -35,7 +35,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Users)
+            @foreach (var user in UserList)
             {
                 <tr>
                     <td>@user.Name</td>
