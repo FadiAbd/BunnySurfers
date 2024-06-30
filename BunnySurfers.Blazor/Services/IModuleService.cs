@@ -7,7 +7,7 @@ namespace BunnySurfers.Blazor.Services
         Task<List<Module>> GetModules();
         Task<Module> GetModuleById(int moduleId);
         Task CreateModule(Module module);
-        Task UpdateModule(int moduleId, Module module);
+        Task UpdateModule(int moduleId, Module moduleyew);
         Task DeleteModule(int moduleId);
     }
 }

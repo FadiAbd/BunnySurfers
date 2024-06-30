@@ -1,0 +1,66 @@
+﻿@inject IModuleService ModuleService
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+
+<h2 style="text-align: center;">Modules</h2>
+
+
+@if (modules.Count == 0)
+{
+    <p><em>Loading modules...</em></p>
+
+}
+else
+{
+
+    <div class="container mt-5" style="margin: 0 auto; text-align: center;">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>CourseId</th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var module in modules)
+                    {
+                        <tr>
+                            <td>@module.Name</td>
+                            <td>@module.Description</td>
+                            <td class="text-nowrap">@module.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td class="text-nowrap">@module.EndDate.ToString("yyyy-MM-dd")</td>
+                            <td>@module.CourseId</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+}
+
+@code {
+    
+    private List<Module> modules = new List<Module>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        modules = await ModuleService.GetModules();
+        {
+
+            var data = await Http.GetStringAsync("/api/Module");
+            var uri = "https://localhost:7274/api/Module";
+            Console.WriteLine($"Requesting URI: {uri}"); data = await Http.GetStringAsync(uri);
+        }
+    }
+}

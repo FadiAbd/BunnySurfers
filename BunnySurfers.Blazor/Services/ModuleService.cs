@@ -33,9 +33,9 @@ namespace BunnySurfers.Blazor.Services
             return await _httpClient.GetFromJsonAsync<List<Module>>("api/Module");
         }
 
-        public async Task UpdateModule(int moduleId, Module module)
+        public async Task UpdateModule(int moduleId, Module moduleyew)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Module/{moduleId}", module);
+            var response = await _httpClient.PutAsJsonAsync($"api/Module/{moduleId}", moduleyew);
             response.EnsureSuccessStatusCode();
         }
     }

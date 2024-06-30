@@ -1,16 +1,27 @@
 ﻿@inject NavigationManager NavigationManager
- @rendermode @(new InteractiveServerRenderMode(prerender:false))
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <div class="body-content">
+
     <div><Courses/></div>
     <div> <button class="btn btn-primary" @onclick="CreateNewCourse">Create New Course</button></div>
-    <div>Box 3</div>
+
+    <div><Modules/></div>
+    <div> <button class="btn btn-primary" @onclick="CreateNewModule">Create New Module</button></div>
+
     <div>Box 4</div>
 </div>
+
 @code {
 
     public void CreateNewCourse()
     {
         NavigationManager.NavigateTo($"/createcourse");
     }
+
+    public void CreateNewModule()
+    {
+        NavigationManager.NavigateTo($"/createmodule");
+    }
 }
+

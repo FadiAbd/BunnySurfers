@@ -2,11 +2,11 @@
  @inject NavigationManager NavigationManager
  @inject HttpClient Http
  @rendermode @(new InteractiveServerRenderMode(prerender:false))
-@*  @rendermode InteractiveServer *@
+
 
 <h2 style="text-align: center;">Courses</h2>
 
-@* @if (courses == null) *@
+
 @if (courses.Count == 0)
 {
     <p><em>Loading courses...</em></p>
@@ -39,7 +39,7 @@ else
                     }
                 </tbody>
             </table>
-            @* <button class="btn btn-primary" @onclick="(() => ShowCourse(courseId))">Create new course</button> *@
+           
         </div>
     </div>
 
@@ -48,7 +48,7 @@ else
 }
 
 @code {
-    // private List<Course> courses;
+   
     private List<Course> courses = new List<Course>();
 
     protected override async Task OnInitializedAsync()
