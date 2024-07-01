@@ -1,0 +1,82 @@
+﻿@page "/activitiesedit/{activityId:int}"
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@inject IActivityService ActivityService
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@using AutoMapper
+@using BunnySurfers.API.DTOs
+
+
+<h2>Edit Activity</h2>
+
+<EditForm Model="@activity" OnValidSubmit="Save" FormName="EditActivityForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="activity.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputText id="description" class="form-control" @bind-Value="activity.Description" />
+    </div>
+    <div class="mb-3">
+        <label for="activityType" class="form-label">Activity Type</label>
+        <InputSelect id="activityType" class="form-control" @bind-Value="activity.ActivityType">
+            @foreach (ActivityType type in Enum.GetValues(typeof(ActivityType)))
+            {
+
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="mb-3">
+        <label for="startTime" class="form-label">Start Time</label>
+        <InputDate Type="InputDateType.DateTimeLocal" id="startTime" class="form-control" @bind-Value="activity.StartTime" />
+    </div>
+    <div class="mb-3">
+        <label for="endTime" class="form-label">End Time</label>
+        <InputDate Type="InputDateType.DateTimeLocal" id="endTime" class="form-control" @bind-Value="activity.EndTime" />
+    </div>
+    <div class="mb-3">
+        <label for="moduleId" class="form-label">ModuleId</label>
+        <InputNumber id="moduleId" class="form-control" @bind-Value="activity.ModuleId" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int activityId { get; init; }
+    private ActivityEditDTO activity = new ActivityEditDTO(){Name = ""};
+
+    protected override async Task OnInitializedAsync()
+    {
+        ActivityGetDTO activity_from_backend = await ActivityService.GetActivityById(activityId);
+        activity = Mapper.Map<ActivityEditDTO>(activity_from_backend);
+        if (activity == null)
+        {
+            NavigationManager.NavigateTo("/TeachersPage");
+        }
+
+    }
+
+    protected async Task Save()
+    {
+        ActivityEditDTO activity_to_backend =
+        new ActivityEditDTO()
+        {
+            Name = activity.Name,
+            Description = activity.Description,
+            ActivityType = activity.ActivityType,
+            StartTime = activity.StartTime,
+            EndTime = activity.EndTime,
+            ModuleId = activity.ModuleId
+        };
+        await ActivityService.UpdateActivity(activityId, activity_to_backend);
+        NavigationManager.NavigateTo("/TeachersPage");
+        StateHasChanged();
+    }
+
+}

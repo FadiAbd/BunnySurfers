@@ -10,6 +10,7 @@ namespace BunnySurfers.API.Profiles
         {
             CreateMap<Activity, ActivityGetDTO>();
             CreateMap<ActivityEditDTO, Activity>();
+            CreateMap<ActivityGetDTO, ActivityEditDTO>();
         }
     }
 }

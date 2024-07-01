@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Json;
+using BunnySurfers.API.DTOs;
 
 
 
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 builder.Services.AddSingleton<IReturnUrlService, ReturnUrlService>();
+builder.Services.AddAutoMapper(typeof(ActivityGetDTO).Assembly);
 
 
 

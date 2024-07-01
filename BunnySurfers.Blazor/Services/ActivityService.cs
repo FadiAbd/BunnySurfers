@@ -1,4 +1,5 @@
 ﻿using BunnySurfers.API.DTOs;
+using BunnySurfers.Blazor.Components;
 using System.Net.Http;
 
 namespace BunnySurfers.Blazor.Services
@@ -22,5 +23,15 @@ namespace BunnySurfers.Blazor.Services
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task<ActivityGetDTO> GetActivityById(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<ActivityGetDTO>($"api/Activities/{id}");
+        }
+
+        public async Task UpdateActivity(int activityId, ActivityEditDTO activity_to_backend)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/Activities/{activityId}", activity_to_backend);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
