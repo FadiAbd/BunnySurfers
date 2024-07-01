@@ -6,16 +6,14 @@ namespace BunnySurfers.Blazor.Components.Widgets
     {
         [Parameter]
         public required string ForName { get; set; }
-
         [Parameter]
         public string LabelText { get; set; } = string.Empty;
-
+        [Parameter]
+        public string DefaultOptionText { get; set; } = string.Empty;
         [Parameter]
         public int? InitialKey { get; set; } = null;
-
         [Parameter]
         public Dictionary<int, string> ItemDict { get; set; } = [];
-
         [Parameter]
         public EventCallback<int> OnValueChanged { get; set; }
 

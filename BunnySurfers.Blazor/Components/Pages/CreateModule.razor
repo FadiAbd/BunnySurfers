@@ -27,10 +27,15 @@
         <label for="endDate" class="form-label">End Date</label>
         <InputDate id="endDate" class="form-control" @bind-Value="module.EndDate" />
     </div>
-    <div class="mb-3">
+    @* <div class="mb-3">
         <label for="courseId" class="form-label">course Id </label>
         <InputNumber id="courseId" class="form-control" @bind-Value="module.CourseId" />
-    </div>
+    </div> *@
+    <GenericDropdown ForName="courseId"
+                     LabelText="Course"
+                     DefaultOptionText="Choose course"
+                     ItemDict="@CourseDict"
+                     OnValueChanged="@OnCourseChanged" />
 
     <button type="submit" class="btn btn-primary">Save</button>
 </EditForm>
@@ -38,6 +43,12 @@
 @code {
     [Parameter]
     public int? moduleId { get; set; }
+
+    [Inject]
+    public ICourseService CourseService { get; set; } = null!;
+
+    private IEnumerable<Course> Courses { get; set; } = [];
+    private Dictionary<int, string> CourseDict { get; set; } = [];
 
     private Module module = new Module
         {
@@ -48,6 +59,14 @@
             CourseId = 0
         };
 
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await CourseService.GetCourses();
+        foreach (var course in Courses)
+        {
+            CourseDict[course.CourseId] = course.Name;
+        }
+    }
 
     private async Task HandleValidSubmit()
     {
@@ -58,5 +77,10 @@
         }
 
         Navigation.NavigateTo("/TeachersPage");
+    }
+
+    public void OnCourseChanged(int selectedCourseId)
+    {
+        module.CourseId = selectedCourseId;
     }
 }
