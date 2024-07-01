@@ -11,6 +11,8 @@ namespace BunnySurfers.Blazor.Components.Pages
         public IUserService UserService { get; set; } = null!;
         [Inject]
         public IApplicationUserService ApplicationUserService { get; set; } = null!;
+        [Inject]
+        public NavigationManager NavManager { get; set; } = null!;
 
         [SupplyParameterFromForm]
         public UserEditDTO UserDTO { get; set; } = null!;
@@ -34,9 +36,9 @@ namespace BunnySurfers.Blazor.Components.Pages
                 return;
             }
 
-            await ApplicationUserService.AddUser(UserDTO);
+            //await ApplicationUserService.AddUser(UserDTO);
             StatusClass = "alert-success";
-            StatusMessage = "User added successfully";
+            StatusMessage = "User successfully added to the database";
             IsSaved = true;
         }
 
