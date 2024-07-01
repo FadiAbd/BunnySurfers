@@ -1,4 +1,4 @@
-﻿<label for="role" class="col-form-label">User role: </label>
+﻿@* <label for="role" class="col-form-label">User role: </label>
 <div>
     <InputSelect class="form-select" @bind-Value="@SelectedUserRoleInt">
         <option value="-1" selected="@(selectedRoleInt == -1)" hidden disabled>Choose role</option>
@@ -10,4 +10,10 @@
             </option>
         }
     </InputSelect>
-</div>
+</div> *@
+
+<GenericDropdown ForName="role"
+                 LabelText="User role: "
+                 InitialKey="@(InitialRole is null ? null : (int)InitialRole)"
+                 ItemDict="@UserRoleDict"
+                 OnValueChanged="@OnUserRoleChanged" />

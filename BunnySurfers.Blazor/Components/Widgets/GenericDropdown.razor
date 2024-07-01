@@ -1,0 +1,13 @@
+﻿<label for="@ForName" class="col-form-label">@LabelText</label>
+<div>
+    <InputSelect class="form-select" @bind-Value="@SelectedKey">
+        <option value="-1" selected="@(selectedKey == -1)" hidden disabled>Choose role</option>
+        @foreach (var kvp in ItemDict)
+        {
+            <option value="@kvp.Key"
+                    selected="@(InitialKey is null ? false : kvp.Key == InitialKey)">
+                @kvp.Value
+            </option>
+        }
+    </InputSelect>
+</div>
