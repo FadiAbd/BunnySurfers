@@ -63,7 +63,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-builder.Services.AddTransient<SeedUserData>();
+// Choose whether or not to seed/check the app database
+var seedAppData = builder.Configuration.GetValue<bool>("SeedAppData");
+var resetAppData = builder.Configuration.GetValue<bool>("ResetAppData");
+if (seedAppData)
+    builder.Services.AddTransient<SeedUserData>();
 
 var app = builder.Build();
 
@@ -71,14 +75,23 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    using var scope = app.Services.CreateScope();
-    await scope.ServiceProvider.GetRequiredService<SeedUserData>().SeedUserDatabase();
 }
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+// Seed the database
+if (seedAppData)
+{
+    using var scope = app.Services.CreateScope();
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedUserData>();
+    if (resetAppData)
+        seedService.ClearUserDatabase();
+    await seedService.SeedUserRoles();
+    await seedService.SeedUserDatabase();
 }
 
 app.UseHttpsRedirection();
