@@ -67,6 +67,7 @@ else
     private void EditModule(int moduleId)
     {
         NavigationManager.NavigateTo($"/modulesedit/{moduleId}");
+
     }
 
     private async Task DeleteModule(int moduleId)
@@ -76,6 +77,7 @@ else
 
         // modules = await ModuleService.GetModules();
         await LoadModules();
+        NavigationManager.NavigateTo($"/TeachersPage");
        
     }
 }

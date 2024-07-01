@@ -73,5 +73,6 @@ else
         // After deletion, refresh the course list asynchronously
         // courses = await CourseService.GetCourses();
         await LoadCourses();
+        NavigationManager.NavigateTo($"/TeachersPage");
     }
 }
