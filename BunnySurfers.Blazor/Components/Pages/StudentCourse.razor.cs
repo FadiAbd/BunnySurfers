@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BunnySurfers.Blazor.Components.Pages
 {
-    public partial class StudentView
+    public partial class StudentCourse
     {
         [Parameter]
         public int StudentId { get; set; }
