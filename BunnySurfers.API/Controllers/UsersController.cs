@@ -81,6 +81,17 @@ namespace BunnySurfers.API.Controllers
             return NoContent();
         }
 
+        // Search for a user
+        [HttpGet("find")]
+        public async Task<ActionResult<UserGetDTO?>> FindUser(
+            [FromQuery(Name = "name")] string name,
+            [FromQuery(Name = "email")] string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Name == name && u.Email == email);
+            return Ok(user);
+        }
+
         // Check that the given UserRole is valid
         private static bool UserRoleIsValid(UserRole role) =>
             Enum.IsDefined(role);
