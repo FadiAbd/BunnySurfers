@@ -1,0 +1,51 @@
+﻿@page "/student/{StudentId:int}/modules/{ModuleId:int}"
+@rendermode InteractiveServer
+@layout StudentLayout
+
+
+<h3>Module Info</h3>
+
+@if (getCourseError)
+{
+    <p>Unable to retrieve module info. Please try again later.</p>
+}
+else if (Course is null)
+{
+    <p>You are not currently enrolled in a course.</p>
+}
+else if (Module is null)
+{
+    <p>This module does not exist within your enrolled course "@Course.Name"</p>
+}
+else
+{
+    <div>
+        <h4>@Module.Name</h4>
+        <h5>@Module.StartDate.ToShortDateString() - @Module.EndDate.ToShortDateString()</h5>
+
+        <p>@Module.Description</p>
+    </div>
+
+    <div>
+        <h5>Module documents</h5>
+        <ul>
+            @foreach (var document in Module.Documents)
+            {
+                <li>@document.Name (uploaded @document.TimeOfUpload.ToString(DTFormat)</li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <h4>Module activities</h4>
+        <ol>
+            @foreach (var activity in Module.Activities)
+            {
+                <li>
+                    <NavLink href=@($"/student/{StudentId}/activities/{activity.ActivityId}")>@activity.Name</NavLink>
+                    : @activity.StartTime.ToString(DTFormat) - @activity.EndTime.ToString(DTFormat)
+                </li>
+            }
+        </ol>
+    </div>
+}

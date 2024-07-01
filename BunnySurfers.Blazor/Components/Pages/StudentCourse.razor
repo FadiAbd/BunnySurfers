@@ -4,26 +4,28 @@
 @layout StudentLayout
 
 
-<div>
-    <h3>Course Info</h3>
+<h3>Course Info</h3>
 
-    @if (getCourseError)
-    {
-        <p>Unable to retrieve course info. Please try again later.</p>
-    }
-    else if (Course is null)
-    {
-        <p>You are not currently enrolled in a course.</p>
-    }
-    else
-    {
+@if (getCourseError)
+{
+    <p>Unable to retrieve course info. Please try again later.</p>
+}
+else if (Course is null)
+{
+    <p>You are not currently enrolled in a course.</p>
+}
+else
+{
+    <div>
         <h4>@Course.Name</h4>
         <h5>@Course.StartDate.ToShortDateString() - @Course.EndDate.ToShortDateString()</h5>
 
         <p>@Course.Description</p>
 
         <p>Teacher: @(Teacher is null ? "None" : $"{Teacher.Name}, {Teacher.Email}")</p>
+    </div>
 
+    <div>
         <h5>Other students</h5>
         <ul>
             @foreach (var student in Students)
@@ -31,5 +33,28 @@
                 <li>@student.Name, @student.Email</li>
             }
         </ul>
-    }
-</div>
+    </div>
+
+    <div>
+        <h5>Course documents</h5>
+        <ul>
+            @foreach (var document in Course.Documents)
+            {
+                <li>@document.Name (uploaded @document.TimeOfUpload.ToString("yyyy-MM-dd HH:mm"))</li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <h4>Course modules</h4>
+        <ol>
+            @foreach (var module in Course.Modules)
+            {
+                <li>
+                    <NavLink href=@($"/student/{StudentId}/modules/{module.ModuleId}")>@module.Name</NavLink>
+                    : @module.StartDate.ToShortDateString() - @module.EndDate.ToShortDateString()
+                </li>
+            }
+        </ol>
+    </div>
+}
