@@ -18,6 +18,7 @@ namespace BunnySurfers.Blazor.Components.Pages
         protected bool getUserError;
         protected bool shouldRender;
         protected bool putUserError;
+        protected bool IsSaved;
         protected string StatusClass = string.Empty;
         protected string StatusMessage = string.Empty;
 
@@ -55,6 +56,7 @@ namespace BunnySurfers.Blazor.Components.Pages
 
             StatusClass = "alert-success";
             StatusMessage = "User successfully updated";
+            IsSaved = true;
         }
     }
 }

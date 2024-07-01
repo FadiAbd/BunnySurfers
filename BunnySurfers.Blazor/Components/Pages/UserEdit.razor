@@ -1,40 +1,45 @@
 ﻿@page "/users/edit/{UserId:int}"
 @rendermode InteractiveServer
+@layout TeacherLayout
 
-<h3>User Management</h3>
-
-@if (!shouldRender)
+@if (!string.IsNullOrWhiteSpace(StatusMessage))
 {
-    <p>Loading...</p>
+    <div class="@StatusClass">@StatusMessage</div>
 }
-else if (UserDTO is null)
-{
-    <p>No user with ID @UserId could be found.</p>
-    <NavLink href="/users">Back to user list</NavLink>
-}
-else
-{
-    @if (!string.IsNullOrWhiteSpace(StatusMessage))
-    {
-        <div class="@StatusClass">@StatusMessage</div>
-    }
 
-    <EditForm Model="UserDTO" OnSubmit="OnSubmit" Enhance FormName="EditUserForm">
-        <div class="row">
-            <label for="name" class="col-form-label">Name: </label>
-            <InputText id="name" class="form-control" @bind-Value="@UserDTO.Name"></InputText>
-        </div>
-        <div class="row">
-            <label for="email" class="col-form-label">Email: </label>
-            <InputText id="email" class="form-control" @bind-Value="@UserDTO.Email"></InputText>
-        </div>
-        <div class="row d-inline-flex">
-            <UserRoleDropdown InitialRole="@UserDTO.Role" OnUserRoleChanged="@OnUserRoleChanged" />
-        </div>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </EditForm>
+@if (!IsSaved)
+{
+    <div>
+        <h3>Edit user</h3>
 
-    <NavLink href="/users">Back to user list</NavLink>
+        @if (!shouldRender)
+        {
+            <p>Loading...</p>
+        }
+        else if (UserDTO is null)
+        {
+            <p>No user with ID @UserId could be found.</p>
+        }
+        else
+        {
+            <EditForm Model="UserDTO" OnSubmit="OnSubmit" Enhance FormName="EditUserForm">
+                <div class="row">
+                    <label for="name" class="col-form-label">Name: </label>
+                    <InputText id="name" class="form-control" @bind-Value="@UserDTO.Name"></InputText>
+                </div>
+                <div class="row">
+                    <label for="email" class="col-form-label">Email: </label>
+                    <InputText id="email" class="form-control" @bind-Value="@UserDTO.Email"></InputText>
+                </div>
+                <div class="row d-inline-flex">
+                    <UserRoleDropdown InitialRole="@UserDTO.Role" OnUserRoleChanged="@OnUserRoleChanged" />
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </EditForm>
+        }
+    </div>
 }
+
+<NavLink href="/users">Back to user list</NavLink>
