@@ -1,0 +1,49 @@
+﻿@page "/student/{StudentId:int}/module/{ModuleId:int}/activity/{ActivityId:int}"
+@rendermode InteractiveServer
+@layout StudentLayout
+
+<h3>Activity Info</h3>
+
+@if (getCourseError)
+{
+    <p>Unable to retrieve module info. Please try again later.</p>
+}
+else if (Course is null)
+{
+    <p>You are not currently enrolled in a course.</p>
+}
+else if (Module is null)
+{
+    <p>This module does not exist within your enrolled course "@Course.Name"</p>
+    <NavLink href=@($"/student/{StudentId}")>Back to course</NavLink>
+}
+else if (Activity is null)
+{
+    <p>This activity does not exist within the module "@Module.Name"</p>
+    <NavLink href=@($"/student/{StudentId}/module/{ModuleId}")>Back to module</NavLink>
+    <NavLink href=@($"/student/{StudentId}")>Back to course</NavLink>
+}
+else
+{
+    <div>
+        <h4>@Activity.Name</h4>
+        <h5>@Activity.StartTime.ToString(DTFormat) - @Activity.EndTime.ToString(DTFormat)</h5>
+
+        <p>@Activity.Description</p>
+    </div>
+
+    <div>
+        <h5>Activity documents</h5>
+        <ul>
+            @foreach (var document in Activity.Documents)
+            {
+                <li>@document.Name (uploaded @document.TimeOfUpload.ToString(DTFormat))</li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <NavLink href=@($"/student/{StudentId}/module/{ModuleId}")>Back to module</NavLink>
+        <NavLink href=@($"/student/{StudentId}")>Back to course</NavLink>
+    </div>
+}

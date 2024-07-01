@@ -1,4 +1,4 @@
-﻿@page "/student/{StudentId:int}/modules/{ModuleId:int}"
+﻿@page "/student/{StudentId:int}/module/{ModuleId:int}"
 @rendermode InteractiveServer
 @layout StudentLayout
 
@@ -16,6 +16,9 @@ else if (Course is null)
 else if (Module is null)
 {
     <p>This module does not exist within your enrolled course "@Course.Name"</p>
+    <div>
+        <NavLink href=@($"/student/{StudentId}")>Back to course</NavLink>
+    </div>
 }
 else
 {
@@ -31,7 +34,7 @@ else
         <ul>
             @foreach (var document in Module.Documents)
             {
-                <li>@document.Name (uploaded @document.TimeOfUpload.ToString(DTFormat)</li>
+                <li>@document.Name (uploaded @document.TimeOfUpload.ToString(DTFormat))</li>
             }
         </ul>
     </div>
@@ -42,10 +45,14 @@ else
             @foreach (var activity in Module.Activities)
             {
                 <li>
-                    <NavLink href=@($"/student/{StudentId}/activities/{activity.ActivityId}")>@activity.Name</NavLink>
+                    <NavLink href=@($"/student/{StudentId}/module/{ModuleId}/activity/{activity.ActivityId}")>@activity.Name</NavLink>
                     : @activity.StartTime.ToString(DTFormat) - @activity.EndTime.ToString(DTFormat)
                 </li>
             }
         </ol>
+    </div>
+
+    <div>
+        <NavLink href=@($"/student/{StudentId}")>Back to course</NavLink>
     </div>
 }

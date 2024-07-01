@@ -51,7 +51,7 @@ else
             @foreach (var module in Course.Modules)
             {
                 <li>
-                    <NavLink href=@($"/student/{StudentId}/modules/{module.ModuleId}")>@module.Name</NavLink>
+                    <NavLink href=@($"/student/{StudentId}/module/{module.ModuleId}")>@module.Name</NavLink>
                     : @module.StartDate.ToShortDateString() - @module.EndDate.ToShortDateString()
                 </li>
             }
