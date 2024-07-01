@@ -68,6 +68,7 @@ namespace BunnySurfers.Blazor.Data
 
         public async Task SeedAppDatabase()
         {
+            //_context.Database.EnsureDeleted();
             await _context.Database.EnsureCreatedAsync();
             await SeedUserRoles();
             await SeedAdminUser();

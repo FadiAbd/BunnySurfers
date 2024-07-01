@@ -73,10 +73,7 @@ if (seedAppData)
 {
     using var scope = app.Services.CreateScope();
     var seedService = scope.ServiceProvider.GetRequiredService<SeedUserData>();
-    if (resetAppData)
-        seedService.ClearUserDatabase();
-    await seedService.SeedUserRoles();
-    await seedService.SeedUserDatabase();
+    await seedService.SeedAppDatabase();
 }
 
 app.UseHttpsRedirection();
