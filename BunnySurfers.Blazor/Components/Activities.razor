@@ -1,0 +1,50 @@
+﻿@using BunnySurfers.API.DTOs;
+@page "/activities"
+@inject IActivityService ActivityService
+
+<h2 style="text-align: center;">Activities</h2>
+
+<div class="container mt-5" style="margin: 0 auto; text-align: center;">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Activity Type</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Module</th>
+                    <th>Actions</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ActivityGetDTO activity in activities)
+                {
+                    <tr>
+                        <td>@activity.Name</td>
+                        <td>@activity.Description</td>
+                        <td>@activity.ActivityType</td>
+                        <td class="text-nowrap">@activity.StartTime.ToString("yyyy-MM-dd h:mm:ss")</td>
+                        <td class="text-nowrap">@activity.EndTime.ToString("yyyy-MM-dd h:mm:ss")</td>
+                        <td>@activity.ModuleId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@code {
+    private List<ActivityGetDTO> activities = new List<ActivityGetDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        activities = await ActivityService.GetActivities();
+    }
+
+
+}

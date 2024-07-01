@@ -12,6 +12,10 @@ namespace BunnySurfers.Blazor.Services
         {
             _httpClient = httpClient;
         }
+        public async Task<List<ActivityGetDTO>> GetActivities()
+        {
+            return await _httpClient.GetFromJsonAsync<List<ActivityGetDTO>>("api/Activities");
+        }
         public async Task CreateActivity(ActivityEditDTO activity)
         {
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Activities", activity);
