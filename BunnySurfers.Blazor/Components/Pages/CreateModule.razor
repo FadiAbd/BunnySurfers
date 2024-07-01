@@ -1,32 +1,35 @@
-﻿@page "/createcourse"
-@inject ICourseService CourseService
+﻿@page  "/createmodule"
+@inject IModuleService ModuleService
 @inject NavigationManager Navigation
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 
+ <h1>Create Module</h1>
 
- <h1>Create Course</h1>
-
-<EditForm Model="course" OnValidSubmit="HandleValidSubmit" FormName="EditCourseForm">
+<EditForm Model="module" OnValidSubmit="HandleValidSubmit" FormName="EditModuleForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
    
 
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
-        <InputText id="name" class="form-control" @bind-Value="course.Name" />
+        <InputText id="name" class="form-control" @bind-Value="module.Name" />
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <InputText id="description" class="form-control" @bind-Value="course.Description" />
+        <InputText id="description" class="form-control" @bind-Value="module.Description" />
     </div>
     <div class="mb-3">
         <label for="startDate" class="form-label">Start Date</label>
-        <InputDate id="startDate" class="form-control" @bind-Value="course.StartDate" />
+        <InputDate id="startDate" class="form-control" @bind-Value="module.StartDate" />
     </div>
     <div class="mb-3">
         <label for="endDate" class="form-label">End Date</label>
-        <InputDate id="endDate" class="form-control" @bind-Value="course.EndDate" />
+        <InputDate id="endDate" class="form-control" @bind-Value="module.EndDate" />
+    </div>
+    <div class="mb-3">
+        <label for="courseId" class="form-label">course Id </label>
+        <InputNumber id="courseId" class="form-control" @bind-Value="module.CourseId" />
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
@@ -34,23 +37,24 @@
 
 @code {
     [Parameter]
-    public int? courseId { get; set; }
+    public int? moduleId { get; set; }
 
-    private Course course = new Course
+    private Module module = new Module
         {
             Name = "", // Initialize with an appropriate default value
             Description = "",
             StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30))
+            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
+            CourseId = 0
         };
 
 
     private async Task HandleValidSubmit()
     {
 
-        if (course.CourseId == 0)
+        if (module.ModuleId == 0)
         {
-            await CourseService.CreateCourse(course);
+            await ModuleService.CreateModule(module);
         }
 
         Navigation.NavigateTo("/TeachersPage");

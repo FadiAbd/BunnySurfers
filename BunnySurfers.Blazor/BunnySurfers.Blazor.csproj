@@ -35,10 +35,4 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
  </ItemGroup>
- <ItemGroup>
-   <UpToDateCheckInput Remove="Components\Pages\ModulesEdit.razor" />
- </ItemGroup>
- <ItemGroup>
-   <_ContentIncludedByDefault Remove="Components\Pages\ModulesEdit.razor" />
- </ItemGroup>
 </Project>
