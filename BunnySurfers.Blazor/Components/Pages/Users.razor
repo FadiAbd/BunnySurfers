@@ -1,52 +1,58 @@
 ﻿@page "/users"
 @rendermode InteractiveServer
+@layout TeacherLayout
 
-<h3>List of users</h3>
+@if (!string.IsNullOrEmpty(StatusMessage))
+{
+    <div class="@StatusClass">@StatusMessage</div>
+}
 
-@if (!shouldRender)
-{
-    <p>Loading users...</p>
-}
-else if (getUsersError || UserList is null)
-{
-    <p>There was an error loading from the database. Please try again later.</p>
-}
-else if (UserList.Count() == 0)
-{
-    <p>There are currently no users in the database.</p>
-    <NavLink href="/users/add">Add new user</NavLink>
-}
-else
-{
-    @if (!string.IsNullOrEmpty(StatusMessage))
+<div class="container-fluid w-100">
+    <h3>List of users</h3>
+
+    @if (!shouldRender)
     {
-        <div class="@StatusClass">@StatusMessage</div>
+        <p>Loading users...</p>
     }
-
-    <NavLink href="/users/add">Add new user</NavLink>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in UserList)
-            {
-                <tr>
-                    <td>@user.Name</td>
-                    <td>@user.Email</td>
-                    <td>@user.Role</td>
-                    <td>
-                        <NavLink href=@($"/users/edit/{user.UserId}")>Edit</NavLink>
-                        <button type="button" @onclick="@(_ => DeleteUser(user.UserId))">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    else if (getUsersError || UserList is null)
+    {
+        <p>There was an error loading from the database. Please try again later.</p>
+    }
+    else if (UserList.Count() == 0)
+    {
+        <div>
+            <p>There are currently no users in the database.</p>
+            <NavLink href="/users/add">Add new user</NavLink>
+        </div>
+    }
+    else
+    {
+        <div class="container-fluid" style="margin: 0 auto;">
+            <NavLink href="/users/add">Add new user</NavLink>
+            <table class="table table-responsive table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="text-align:start">Name</th>
+                        <th style="text-align:start">Email</th>
+                        <th style="text-align:start">Role</th>
+                        <th style="text-align:center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in UserList)
+                    {
+                        <tr>
+                            <td style="text-align:start">@user.Name</td>
+                            <td style="text-align:start">@user.Email</td>
+                            <td style="text-align:start">@user.Role</td>
+                            <td style="text-align:center">
+                                <NavLink href=@($"/users/edit/{user.UserId}")>Edit</NavLink>
+                                <button type="button" @onclick="@(_ => DeleteUser(user.UserId))">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
