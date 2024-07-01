@@ -52,6 +52,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         // Perform asynchronous operation to fetch courses
+        // courses = await CourseService.GetCourses();
+        await LoadCourses();
+    }
+
+    private async Task LoadCourses()
+    {
         courses = await CourseService.GetCourses();
     }
 
@@ -65,6 +71,7 @@ else
         // Call asynchronous delete method from service
         await CourseService.DeleteCourse(courseId);
         // After deletion, refresh the course list asynchronously
-        courses = await CourseService.GetCourses();
+        // courses = await CourseService.GetCourses();
+        await LoadCourses();
     }
 }

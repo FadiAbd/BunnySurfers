@@ -68,7 +68,9 @@ namespace BunnySurfers.API.Controllers
         [HttpDelete("{courseId}")]
         public async Task<IActionResult> DeleteCourse(int courseId)
         {
-            var courseToDelete = await _dbContext.Courses.FindAsync(courseId);
+            var courseToDelete = await _dbContext.Courses.Include(c => c.Modules)
+                                                         .ThenInclude(m => m.Activities)
+                                                         .FirstOrDefaultAsync(c => c.CourseId == courseId);  
             if (courseToDelete == null)
                 return NotFound();
 

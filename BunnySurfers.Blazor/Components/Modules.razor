@@ -49,11 +49,17 @@ else
 }
 
 @code {
-   
+
 
     private List<Module> modules = new List<Module>();
 
     protected override async Task OnInitializedAsync()
+    {
+        // modules = await ModuleService.GetModules();
+        await LoadModules();
+    }
+
+    private async Task LoadModules()
     {
         modules = await ModuleService.GetModules();
     }
@@ -65,9 +71,11 @@ else
 
     private async Task DeleteModule(int moduleId)
     {
-        
+
         await ModuleService.DeleteModule(moduleId);
+
+        // modules = await ModuleService.GetModules();
+        await LoadModules();
        
-        modules = await ModuleService.GetModules();
     }
 }

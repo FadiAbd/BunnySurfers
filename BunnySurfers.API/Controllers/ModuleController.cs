@@ -53,9 +53,13 @@ namespace BunnySurfers.API.Controllers
         [HttpDelete("{moduleId:int}")]
         public async Task<IActionResult> DeleteModule(int moduleId)
         {
-            var module = await _context.Modules.FindAsync(moduleId);
+            var module = await _context.Modules
+                .Include(m => m.Activities)
+                .FirstOrDefaultAsync(m => m.ModuleId == moduleId);
             if (module is null)
+            {
                 return NotFound($"No module with ID {moduleId} was found");
+            }
 
             _context.Modules.Remove(module);
             await _context.SaveChangesAsync();

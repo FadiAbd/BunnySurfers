@@ -13,7 +13,19 @@ namespace BunnySurfers.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<Course>()
+           .HasMany(c => c.Modules)
+           .WithOne(m => m.Course)
+           .HasForeignKey(m => m.CourseId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Module>()
+                .HasMany(m => m.Activities)
+                .WithOne(a => a.Module)
+                .HasForeignKey(a => a.ModuleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }
