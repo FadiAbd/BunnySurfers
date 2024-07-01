@@ -23,8 +23,14 @@ namespace BunnySurfers.API.Controllers
                 .Include(u => u.Courses)
                 .ThenInclude(c => c.Users)
                 .Include(u => u.Courses)
+                .ThenInclude(c => c.Documents)
+                .Include(u => u.Courses)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(m => m.Documents)
+                .Include(u => u.Courses)
                 .ThenInclude(c => c.Modules)
                 .ThenInclude(m => m.Activities)
+                .ThenInclude(a => a.Documents)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(u => u.UserId == studentId);
 
