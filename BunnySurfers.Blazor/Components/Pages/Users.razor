@@ -1,35 +1,35 @@
-﻿@page "/users"
+﻿@* @page "/users"
 @rendermode InteractiveServer
 @layout TeacherLayout
 
 @if (!string.IsNullOrEmpty(StatusMessage))
 {
     <div class="@StatusClass">@StatusMessage</div>
+} *@
+
+<h2 style="text-align: center;">Users</h2>
+
+@if (!shouldRender)
+{
+    <p>Loading users...</p>
 }
-
-<div class="container-fluid w-100">
-    <h3>List of users</h3>
-
-    @if (!shouldRender)
-    {
-        <p>Loading users...</p>
-    }
-    else if (getUsersError || UserList is null)
-    {
-        <p>There was an error loading from the database. Please try again later.</p>
-    }
-    else if (UserList.Count() == 0)
-    {
-        <div>
-            <p>There are currently no users in the database.</p>
-            <NavLink href="/users/add">Add new user</NavLink>
-        </div>
-    }
-    else
-    {
-        <div class="container-fluid" style="margin: 0 auto;">
-            <NavLink href="/users/add">Add new user</NavLink>
-            <table class="table table-responsive table-striped table-bordered">
+else if (getUsersError || UserList is null)
+{
+    <p>There was an error loading from the database. Please try again later.</p>
+}
+else if (UserList.Count() == 0)
+{
+    <div>
+        <p>There are currently no users in the database.</p>
+        <NavLink href="/users/add">Add new user</NavLink>
+    </div>
+}
+else
+{
+    <NavLink href="users/add"><button type="button">Add new user</button></NavLink>
+    <div class="container mt-5" style="margin: 0 auto; text-align: center;">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
                 <thead class="thead-dark">
                     <tr>
                         <th style="text-align:start">Name</th>
@@ -46,7 +46,7 @@
                             <td style="text-align:start">@user.Email</td>
                             <td style="text-align:start">@user.Role</td>
                             <td style="text-align:center">
-                                <NavLink href=@($"/users/edit/{user.UserId}")>Edit</NavLink>
+                                <NavLink href=@($"/users/edit/{user.UserId}")><button type="button">Edit</button></NavLink>
                                 <button type="button" @onclick="@(_ => DeleteUser(user.UserId))">Delete</button>
                             </td>
                         </tr>
@@ -54,5 +54,5 @@
                 </tbody>
             </table>
         </div>
-    }
-</div>
+    </div>
+}
