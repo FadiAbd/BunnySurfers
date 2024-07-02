@@ -13,12 +13,12 @@
     box-sizing: border-box;
 }
 
-nav ul li {
+.nav-item {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-nav ul li a {
+.nav-link {
     color: whitesmoke;
     text-decoration: none;
 }
