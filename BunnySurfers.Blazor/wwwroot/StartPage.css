@@ -13,6 +13,16 @@
     box-sizing: border-box;
 }
 
+nav ul li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+nav ul li a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
 .main-container {
     display: flex;
     flex-direction: column;
